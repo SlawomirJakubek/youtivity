@@ -24,8 +24,8 @@ $(document).ready(()=>{
 
     $(".close-btn").each( (index, elem) => {
         $(elem).on('click', e =>{
-            $menu.show();
             $(e.target).parent().hide();
+            showBox();
         });
     });
 });
