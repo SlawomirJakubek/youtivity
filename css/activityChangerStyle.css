@@ -1,51 +1,27 @@
+:root{
+    /*DIMENSIONS*/
+    --mainHeight: 460px;
+
+    --bottomBarFontSize: 1.7rem;
+    --bottomBarHorMargin: 45px;
+}
+
 /* L1 */
-main, nav{
-    margin: 0px;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
 main{
-    height: 90%;
-    background-color: rgb(255, 102, 46);
-}
-
-nav{
-    height: 10%;
-    background-color: rgb(255, 86, 24);
+    height: var(--mainHeight);
 }
 
 /* L2 */
-
 .box{
-    width: 360px;
-    height: 460px;
-    background-color: rgb(255, 115, 64);
-    border: 1px solid rgb(255, 86, 24);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-}
-
-nav button{
-    margin: 0 40px;
-    padding: 0 30px;
-    font-size: 1.7rem;
-    color: rgb(99, 26, 0);
+    height: var(--mainHeight);
 }
 
 #addActivity, #menu{
     display: none;
 }
 
-/* L3 */
-
-main section button{
-    color: rgb(99, 26, 0);
-    font-size: 1.5rem;
-    max-height: 4rem;
-    padding: 5px 12px;
+/*BOTTOM BAR*/
+#bottomBar button{
+    margin: 0 var(--bottomBarHorMargin) 0 var(--bottomBarHorMargin);
+    font-size: var(--bottomBarFontSize);
 }

@@ -277,7 +277,7 @@
     <meta name="keywords" content="activity, track, monitor" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta charset="utf-8" />
-    <meta id="themeColor" name="theme-color" content="coral" />
+    <meta id="themeColor" name="theme-color" content="rgb(0, 80, 80)" />
     <link rel="stylesheet" type="text/css" href="./css/normalize.css" />
     <link rel="stylesheet" type="text/css" href="./css/common.css" />
     <link rel="stylesheet" type="text/css" href="./css/indexStyle.css" />
@@ -305,15 +305,15 @@
         <h1>YOUTIVITY</h1>
     </header>
     <main>
-        <nav id="menu" class="box" <?= $info ? 'style="display: none"' : ''; ?>>
+        <nav class="box" id="menu" <?= $info ? 'style="display: none"' : ''; ?>>
             <button id="login-btn">LOGIN</button>
             <button id="register-btn">REGISTER</button>
             <button id="about-btn">ABOUT</button>
         </nav>  
         <section class="box" id="login">
             <h2>LOGIN</h2><!--
-            --><button class="close-btn">X</button>
-            <form method="post" autocomplete="on">
+            --><button class="close-btn">X</button><!--
+            --><form class="box-content" method="post" autocomplete="on">
                 <div>
                     <label for="login-name">username</label>
                     <input id="login-name" name="username" type="text" minlength="5" maxlength="30" value="<?= $username ?>" required />
@@ -328,7 +328,7 @@
         <section class="box" id="register">
             <h2>REGISTER</h2><!--
                 --><button class="close-btn">X</button>
-                <form method="post" autocomplete="on">
+                <form class="box-content" method="post" autocomplete="on">
                 <div>
                     <label for="register-name">username</label>
                     <input id="register-name" name="rUsername" type="text" minlength="5" maxlength="30" value="<?= $rUsername ?>" required />
@@ -347,19 +347,21 @@
         <section class="box" id="about">
             <h2>ABOUT</h2><!--
             --><button class="close-btn">X</button>
-            <p>youtivity is an app that helps you monitor and control your activity 24/7. Very simple and intuitive but amazingly powerful. Check it out yourself!</p>
+            <div class="box-content">
+                <p>Youtivity is an app that helps you monitor and control your activity 24/7.<br><br>Very simple and intuitive but amazingly powerful.<br><br>Check it out yourself!</p>
+            </div>
         </section>
         <section class="box" id="info" <?= $info ? 'style="display: block"' : ''; ?>>
             <h2 id="info-header"><?= $infoHeader ?></h2><!--
             --><button class="close-btn">X</button>
-            <div id="info-container">
+            <div class="box-content" id="info-container">
                 <p id="info-body"><?= $infoBody ?></p>
             </div>
         </section>
     </main>
-    <footer>
-        <p>author</p>
-        <p>copyrights</p>
+    <footer id="bottomBar">
+        <button id="authorBtn">AUTHOR</button>
+        <button id="copyrightsBtn">COPYRIGHTS</button>
     </footer>
 </body>
 </html>

@@ -1,116 +1,52 @@
-/* L1 */
-header, main, footer{
-    margin: 0px;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+:root{
+    /*DIMENSIONS*/
+    --mainHeight: 380px;
 }
 
+/* L1 */
 header{
-    height: 15%;
-    background-color: coral;
+    width: var(--mainWidth);
+    height: var(--headerHeight);
+    background-color: var(--colorLightnes1);
 }
 
 main{
-    height: 75%;
-    background-color: rgb(255, 102, 46);
-}
-
-footer{
-    height: 10%;
-    background-color: rgb(255, 86, 24);
+    height: var(--mainHeight);
 }
 
 /* L2 */
-h1{
-    margin: 0;
-    text-align: center;
-}
-
-footer p{
-    margin: 0 40px;
-}
-
 .box{
-    width: 360px;
-    height: 380px;
-    background-color: rgb(255, 115, 64);
-    border: 1px solid rgb(255, 86, 24);
+    height: var(--mainHeight);
 }
 
 #login, #register, #about, #info{ 
     display: none;
 }
 
-nav{
+/* BOX */
+
+/* BOX MENU */
+.box#menu{
     display: flex;
     flex-wrap: wrap;
-    align-content: space-around;
+    align-content: center;
 }
-
-/*NAV*/
-
-button{
+.box#menu button{
     width: 100%;
-    height: 20%;
-}
-
-/*COMMON FOR LOGIN, REGISTER, ABOUT, INFO*/
-form{
-    display: flex;
-    align-content:space-around;
-    flex-wrap: wrap;
-    height: 328px;
-}
-
-form div{
-    width: 100%;
-}
-
-form div label{
-    display: block;
-    font-size: 1.5rem;
-    color: rgb(99, 26, 0);
-}
-
-form div input{
-    display: block;
-    font-size: 1.4rem;
-    width: 100%;
-}
-
-/*LOGIN*/
-form div input{
+    margin: 10px 100px;
     height: 60px;
-}
-/*REGISTER*/
-form div input{
-    height: 40px;
-}
-/*ABOUT*/
-
-#about p{
-    font-size: 1.5rem;
-    text-align: justify;
-    margin: 0;
-    padding: 40px 24px;
-    line-height: 1.6;
+    border-radius: 10px;
 }
 
-/*INFO*/
-#info-container{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 328px;
-    font-size: 1.5rem;
-    text-align: justify;
-    margin: 0;
-    padding: 20px 20px;
+/* BOX ABOUT CONTENT */
+
+.box#about .box-content p, .box#info .box-content p{
+    padding: 0 50px;
+    font-size: 1.4rem;
 }
 
+/* MEDIA QUERIES */
+/*
 @media only screen and (max-height: 508px){
     header, footer{
         display: none;

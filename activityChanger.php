@@ -33,7 +33,7 @@ function logout(){
     <meta name="keywords" content="activity, track, monitor" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta charset="utf-8" />
-    <meta id="themeColor" name="theme-color" content="coral" />
+    <meta id="themeColor" name="theme-color" content="rgb(0, 80, 80)" />
     <link rel="stylesheet" type="text/css" href="./css/normalize.css" />
     <link rel="stylesheet" type="text/css" href="./css/common.css" />
     <link rel="stylesheet" type="text/css" href="./css/activityChangerStyle.css" />
@@ -53,7 +53,7 @@ function logout(){
             --><button class="close-btn">X</button>
         </section>
     </main>
-    <nav>
+    <nav id="bottomBar">
         <button id="menuBtn">&#9776;</button>
         <button id="addBtn">&#10010;</button>
     </nav>
