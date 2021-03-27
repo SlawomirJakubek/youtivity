@@ -16,6 +16,7 @@
     define('DATE_REGISTERED', 4);
     define('KEY', 5);
     define('CLEARANCE', 6);
+    session_start();
 
     if(isset($_REQUEST['username']) && isset($_REQUEST['password'])){
         $username = filter_var($_REQUEST['username'], FILTER_SANITIZE_STRING);
@@ -40,6 +41,13 @@
         }else{
             $infoBody = 'This account has been removed. If you wish to open one, please fill in the registration form.';
         }
+    }else if(isset($_SESSION['loggedOut'])){
+        unset($_SESSION['loggedOut']);
+        session_destroy();
+        $info = true;
+        $boxName = 'login';
+        $infoHeader = "YOU ARE LOGGED OUT";
+        $infoBody = "We don't know if you logged in on your personal device or not. Therefore to keep your data secure and due to your inactivity you had been logged out. To turn this feature off (for this device) go to settings";
     }
 
     function login($username, $password){
@@ -64,7 +72,6 @@
             return;
         }
         //login
-        session_start();
         $_SESSION["username"] = $username;
         header('Location: activityChanger.php');
     }
@@ -272,7 +279,8 @@
     <meta charset="utf-8" />
     <meta id="themeColor" name="theme-color" content="coral" />
     <link rel="stylesheet" type="text/css" href="./css/normalize.css" />
-    <link rel="stylesheet" type="text/css" href="./css/style.css" />
+    <link rel="stylesheet" type="text/css" href="./css/common.css" />
+    <link rel="stylesheet" type="text/css" href="./css/indexStyle.css" />
     <script src="./js/jquery-3.6.0.min.js"></script>
     <script>
         let boxName = '<?= $boxName; ?>';
@@ -290,7 +298,7 @@
             boxName = 'menu';
         }
     </script>
-    <script defer src="./js/javascript.js"></script>
+    <script defer src="./js/indexJavaScript.js"></script>
 </head>
 <body>
     <header>
