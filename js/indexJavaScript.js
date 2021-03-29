@@ -22,7 +22,7 @@ $(document).ready(()=>{
         $about.show();
     });
 
-    $(".close-btn").each( (index, elem) => {
+    $(".closeBtn").each( (index, elem) => {
         $(elem).on('click', e =>{
             $(e.target).parent().hide();
             showBox();

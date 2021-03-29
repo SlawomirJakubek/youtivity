@@ -6,8 +6,9 @@
 /* L1 */
 header{
     width: var(--mainWidth);
-    height: var(--headerHeight);
+    height: var(--h1Height);
     background-color: var(--colorLightnes1);
+    /*border-radius: var(--borderRadius);*/
 }
 
 main{
@@ -15,10 +16,6 @@ main{
 }
 
 /* L2 */
-.box{
-    height: var(--mainHeight);
-}
-
 #login, #register, #about, #info{ 
     display: none;
 }

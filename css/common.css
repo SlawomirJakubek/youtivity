@@ -13,13 +13,16 @@
     --colorLightnes0: rgb(0, 40, 40);
 
     /*DIMENSIONS*/
-    --headerHeight: 80px;
+    --h1Height: 80px;
 
     --mainWidth: 360px;
 
     --bottomBarHeight: 50px;
     --bottomBarFontSize: .7rem;
     --bottomBarHorMargin: 35px;
+
+    /*BORDER*/
+    --borderRadius: 12.5px;
 }
 
 /* L0 */
@@ -31,7 +34,7 @@ html, body {
     background-color: var(--colorLightnes0);
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content:space-between;
     align-items: center;
     align-content: space-between;
     font-family: Verdana;
@@ -41,9 +44,7 @@ html, body {
 /* L1 */
 main, #bottomBar{
     width: var(--mainWidth);
-}
-
-main{
+    /*border-radius: var(--borderRadius);*/
     background-color: var(--colorLightnes1);
 }
 
@@ -54,11 +55,15 @@ main{
     justify-content: center;
 }
 
+button{
+    cursor: pointer;
+}
+
 /* L2 */
 /* BOX */
 .box{
-    width: var(--mainWidth);
-    background-color: var(--colorLightnes2);
+    width: 100%;
+    height: 100%;
     position: relative;
 }
 
@@ -69,20 +74,20 @@ main{
     width: 310px;
     background-color: var(--colorLightnes3);
     display: inline-block;
-    border-radius: 12.5px;
+    border-radius: var(--borderRadius);
     position: absolute;
     top: 0;
     left: 0;
 }
 
-.box .close-btn{
+.box .closeBtn{
     margin: 0;
     padding: 0;
     width: 50px;
     height: 50px;
     background-color: var(--colorLightnes3);
     display: inline-block;
-    border-radius: 25px;
+    border-radius: var(--borderRadius);
     position: absolute;
     top: 0px;
     right: 0px;
@@ -100,24 +105,23 @@ main{
     align-items: center;
 }
 
-/* BOX - CONTENT */
-
+/* ELEMENTS inside BOX - CONTENT */
 /* BOX - CONTENT - FORM */
-form.box-content div{
+.box-content div{
     margin: 10px 0;
 }
 
-form.box-content div label{
+.box-content div label{
     display: block;
 }
 
-form.box-content div input{
+.box-content div input{
     font-size: 1.3rem;
     height: 45px;
     border-radius: 15px;
 }
 
-form.box-content button{
+.box-content button{
     margin-top: 15px;
     border-radius: 15px;
     font-size: 1.2rem;
@@ -129,7 +133,7 @@ form.box-content button{
     background-color: transparent;
     margin: 0 var(--bottomBarHorMargin) 0 var(--bottomBarHorMargin);
     border: 0px;
-    cursor: pointer;
     font-weight: bold;
     font-size: var(--bottomBarFontSize);
+
 }

@@ -8,15 +8,43 @@
 
 /* L1 */
 main{
-    height: var(--mainHeight);
+    min-height: var(--mainHeight);
 }
 
 /* L2 */
-.box{
-    height: var(--mainHeight);
+.box-content{
+    height: 410px;
 }
 
+/*activities box*/
+#activities {
+    overflow: scroll;
+    overflow-x: hidden;
+}
+
+#activitiesWrapper{
+    display: flex;
+    flex-direction: column;
+}
+
+#activities button{
+    margin: 2px 30px;
+    padding: 10px 0;
+    width: 300px;
+    border-radius: 10px;
+}
+
+/*add activity box*/
 #addActivity, #menu{
+    display: none;
+}
+
+#addActivityInfo{
+    position: absolute;
+    color: crimson;
+    background-color: aliceblue;
+    border: 1px solid crimson;
+    top: 60px;
     display: none;
 }
 

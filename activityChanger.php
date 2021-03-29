@@ -43,19 +43,29 @@ function logout(){
 <body>
     <main>
         <section class="box" id="activities">
+            <div id="activitiesWrapper">
+            </div>
         </section>
         <section class="box" id="addActivity">
             <h2>ADD ACTIVITY</h2><!--
-            --><button class="close-btn">X</button>
+            --><button class="closeBtn" openBox="activities">X</button>
+            <div class="box-content">
+                <p id="addActivityInfo">you already have an activity with that name</p>
+                <div>
+                    <label for="activityName">name</label>
+                    <input type="text" id="addActivityName" placeholder="e.g. sleeping"/>
+                </div>
+                <button id="addActivityBtn">add</button>
+            </div>
         </section>
         <section class="box" id="menu">
             <h2>MENU</h2><!--
-            --><button class="close-btn">X</button>
+            --><button class="closeBtn"  openBox="activities">X</button>
         </section>
     </main>
     <nav id="bottomBar">
-        <button id="menuBtn">&#9776;</button>
-        <button id="addBtn">&#10010;</button>
+        <button id="menuBtn" openBox="menu">&#9776;</button>
+        <button id="addBtn"openBox="addActivity">&#10010;</button>
     </nav>
 </body>
 </html>

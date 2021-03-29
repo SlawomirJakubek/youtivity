@@ -312,7 +312,7 @@
         </nav>  
         <section class="box" id="login">
             <h2>LOGIN</h2><!--
-            --><button class="close-btn">X</button><!--
+            --><button class="closeBtn">X</button><!--
             --><form class="box-content" method="post" autocomplete="on">
                 <div>
                     <label for="login-name">username</label>
@@ -327,7 +327,7 @@
         </section>
         <section class="box" id="register">
             <h2>REGISTER</h2><!--
-                --><button class="close-btn">X</button>
+                --><button class="closeBtn">X</button>
                 <form class="box-content" method="post" autocomplete="on">
                 <div>
                     <label for="register-name">username</label>
@@ -346,14 +346,14 @@
         </section>
         <section class="box" id="about">
             <h2>ABOUT</h2><!--
-            --><button class="close-btn">X</button>
+            --><button class="closeBtn">X</button>
             <div class="box-content">
                 <p>Youtivity is an app that helps you monitor and control your activity 24/7.<br><br>Very simple and intuitive but amazingly powerful.<br><br>Check it out yourself!</p>
             </div>
         </section>
         <section class="box" id="info" <?= $info ? 'style="display: block"' : ''; ?>>
             <h2 id="info-header"><?= $infoHeader ?></h2><!--
-            --><button class="close-btn">X</button>
+            --><button class="closeBtn">X</button>
             <div class="box-content" id="info-container">
                 <p id="info-body"><?= $infoBody ?></p>
             </div>
