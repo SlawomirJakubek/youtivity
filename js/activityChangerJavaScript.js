@@ -1,229 +1,260 @@
 $(document).ready(()=>{
-    //load activities list fomr the server
-    let request = new XMLHttpRequest();
-    request.open('POST', './php/activityNames.php?');
-    request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    request.onreadystatechange = () => {
-        if(request.readyState == 4 && request.status == 200){
-            console.log('SUCCESS');
-            let data = [];
-            const r = request.responseText;
-            if(r[0] == '[' && r[r.length - 1] == ']'){
-                data = JSON.parse(request.responseText);
-            }
-            build(data);
+    class Data extends EventTarget{
+        static ADD = 'ADD';
+        static REMOVE = 'REMOVE';
+        static UPDATE = 'UPDATE';
+        static ERROR = 'ERROR';
+
+        constructor(){
+            super();
+            this.buttonPressedName = '';
+
+            //load activities list
+            let request = new XMLHttpRequest();
+            request.open('POST', './php/activityNames.php?');
+            request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            request.onreadystatechange = () => {
+                if(request.readyState == 4 && request.status == 200){
+                    console.log('SUCCESS');
+                    let data = [];
+                    const r = request.responseText;
+                    if(r[0] == '[' && r[r.length - 1] == ']'){
+                        data = JSON.parse(request.responseText);
+                    }
+                    this._activityNames = data;
+                    this.dispatchEvent(new Event(Data.UPDATE));
+                }
+                if(request.status > 200){
+                    console.log("ERROR");
+                }
+            };
+            request.send(`username=${username}`);
         }
-        if(request.status > 200){
-            console.log("ERROR");
+
+        get activityNames(){
+            return [...this._activityNames];
         }
-    };
-    request.send(`username=${username}`);
 
-    //build an app when activities list has loaded
-    function build(activityNames){
+        hasName(name){
+            return this._activityNames.indexOf(name) != -1;
+        }
 
-        class AbstractBox{
-            static $currentBox;
-            static boxes = {};
+        add(name){
+            this._activityNames.push(name);
+            this.currentEventType = Data.ADD;
+            this.save();
+        }
 
-            constructor(id){
-                this.$element = $(`#${id}`);
-                this.$closeBtn = $(`#${id} .closeBtn`);
-                
-                this.$closeBtn.on('click', e => {
-                    this.$element.hide();
-                    AbstractBox.showBox(this.$closeBtn.attr("openBox"));
-                });
-            }
+        save(){
+            let request = new XMLHttpRequest();
+            request.open('POST', './php/activityNames.php?');
+            request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            request.onreadystatechange = () => {
+                if(request.readyState == 4 && request.status == 200){
+                    this.dispatchEvent(new Event(this.currentEventType));
+                    this.dispatchEvent(new Event(Data.UPDATE));
+                }
+                if(request.status > 200){
+                    this.dispatchEvent(new Event(Data.ERROR));
+                }
+            };
+            request.send(`data=${JSON.stringify(this._activityNames)}&username=${username}`);
+        }
+    }
 
-            show(){
-                this.$element.show();
-            }
+ 
+    class AbstractBox{
+        static $currentBox;
+        static boxes = {};
 
-            hide(){
+        constructor(id){
+            this.$element = $(`#${id}`);
+            this.$closeBtn = $(`#${id} .closeBtn`);
+            
+            this.$closeBtn.on('click', e => {
                 this.$element.hide();
-            }
-
-            close(){
-                this.hide();
                 AbstractBox.showBox(this.$closeBtn.attr("openBox"));
-            }
-
-            static showBox(name){
-                AbstractBox.$currentBox.hide();
-                AbstractBox.$currentBox = AbstractBox.boxes[name];
-                AbstractBox.$currentBox.show();
-            }
+            });
         }
 
-        class AddActivityBox extends AbstractBox{
-            constructor(id){
-                super(id);
-                this.$openBtn = $('#addBtn');
-                this.$addBtn = $('#addActivityBtn');
-                this.$input = $('#addActivityName');
-                this.$info = $('#addActivityInfo');
-                this.$addActivityBtn = $('#addActivityBtn');
-                this.$addActivityName = $('#addActivityName');
-                this.$addActivityInfo = $('#addActivityInfo');
+        show(){
+            this.$element.show();
+        }
 
-                //open Add Activity Box on click and focus on input
-                this.$openBtn.on('click', ()=>{
-                    AbstractBox.showBox(this.$openBtn.attr('openBox'));
+        hide(){
+            this.$element.hide();
+        }
+
+        close(){
+            this.hide();
+            AbstractBox.showBox(this.$closeBtn.attr("openBox"));
+        }
+
+        static showBox(name){
+            AbstractBox.$currentBox.hide();
+            AbstractBox.$currentBox = AbstractBox.boxes[name];
+            AbstractBox.$currentBox.show();
+        }
+    }
+
+    class AddActivityBox extends AbstractBox{
+        constructor(data){
+            super('addActivity');
+            this.$openBtn = $('#addBtn');
+            this.$addBtn = $('#addActivityBtn');
+            this.$input = $('#addActivityName');
+            this.$info = $('#addActivityInfo');
+            this.$addActivityInfo = $('#addActivityInfo');
+            this.newName;
+
+            const addActivity = () => {
+                ActivitySwitcher.SCROLL = true;
+                data.add(this.newName);
+            };
+
+            //open Add Activity Box on click and focus on input
+            this.$openBtn.on('click', ()=>{
+                AbstractBox.showBox(this.$openBtn.attr('openBox'));
+                this.$input.focus();
+            });
+
+            //add new activity on button click
+            this.$addBtn.on('click', ()=>{addActivity()});
+
+            $(this.$element).on('keyup', e => {
+                //add new activity on enter
+                if(e.which == 13 && !this.$addBtn.prop('disabled')){
+                    addActivity();
+                }
+                //stop propagation of the space bar if focused on input
+                if(e.which != 27){
+                    e.stopPropagation();
+                }
+            });
+
+            this.$input.on('input', e => {
+                const name = this.$input.val().toLowerCase().trim();
+                let isFieldEmpty = name.trim().length == 0;
+                let isDuplicate = data.hasName(name);
+                //on input show or hide info
+                this.$addActivityInfo.css('visibility', isDuplicate ? 'visible' : 'hidden');
+                //on imput enable or disable "add activity" button
+                if(isFieldEmpty || isDuplicate){
+                    this.$addBtn.prop('disabled', true);
+                }else{
+                    this.$addBtn.prop('disabled', false);
+                    this.newName = name;
+                }
+            });
+
+            // open box on key up:
+            $(document).on('keyup', e => {
+                if(e.which == 107){
+                    AbstractBox.showBox('addActivity');
                     this.$input.focus();
-                });
+                }
+            });
 
-                //add new activity on button click
-                this.$addActivityBtn.on('click', ()=>{this.addActivity()});
-
-                $(this.$element).on('keyup', e => {
-                    //add new activity on enter
-                    if(e.which == 13 && !this.$addActivityBtn.prop('disabled')){
-                        this.addActivity();
-                    }
-                    //stop propagation of the space bar if focused on input
-                    if(e.which != 27){
-                        e.stopPropagation();
-                    }
-                });
-
-                this.$addActivityName.on('input', e => {
-                    const name = this.$addActivityName.val();
-                    let isFieldEmpty = name.trim().length == 0;
-                    let isDuplicate = activitySwitcher.hasActivityName(name);
-                    //on input show or hide info
-                    this.$addActivityInfo.css('visibility', isDuplicate ? 'visible' : 'hidden');
-                    //on imput enable or disable "add activity" button
-                    this.$addActivityBtn.prop('disabled', isFieldEmpty || isDuplicate);
-                });
-
-                // open box on key up:
-                $(document).on('keyup', e => {
-                    if(e.which == 107){
-                        AbstractBox.showBox('addActivity');
-                        $('#addActivityName').focus();
-                    }
-                });
-            }
-
-            addActivity(){
-                const name = this.$addActivityName.val().toLowerCase().trim();
-                activitySwitcher.addActivityBtn(name);
+            data.addEventListener(Data.ADD, () => {
                 this.clear();
                 AbstractBox.showBox('activitySwitcher');
-            }
-
-            clear(){
-                this.$addActivityInfo.css('visibility', 'hidden');
-                this.$addActivityName.val('');
-                this.$addActivityBtn.prop('disabled', true);
-            }
-        }
-        
-        class MenuBox extends AbstractBox{
-            constructor(id){
-                super(id);
-                this.$menuBtn = $('#menuBtn');
-                this.$menuBtn.on('click', ()=>{
-                    AbstractBox.showBox(this.$menuBtn.attr('openBox'));
-                });
-                // open box on key up:
-                $(document).on('keyup', e => {        
-                    if(e.which == 32){
-                        AbstractBox.showBox('menu');
-                    }
-                });
-            }
+            });
         }
 
-        class ActivitySwitcher{
-            constructor(){
-                this.activityNames = activityNames;
-                this.$element = $("#activitySwitcher");
-                this.$wrapper = $("#activitiesWrapper");
-                
-                //create buttons based on activity names
-                activityNames.forEach(name => {
-                    this.addActivityBtn(name);
-                });
-
-                //on switch activity
-                $(this.$wrapper).on('click', e => {
-                    if(e.target.tagName == 'BUTTON'){
-                        //reset all activity buttons
-                        $('#activitiesWrapper button').each((index, elem) => {
-                            $(elem).removeClass('buttonPressed');
-                            $(elem).prop('disabled', false);
-
-                        });
-                        //set style to the pressed activity button
-                        $(e.target).addClass('buttonPressed');
-                        $(e.target).prop('disabled', true);
-                        
-                        //save activity event
-                        const stamp = {
-                            activity: $(e.target).html(),
-                            time: new Date().getTime()
-                        }
-                        console.log(JSON.stringify(stamp));
-                    }
-                });
-
-                // open box on key up:
-                $(document).on('keyup', e => {
-                    if(e.which == 27){
-                        AbstractBox.$currentBox.close();
-                    }
-                });
-            }
-
-            show(){
-                this.$element.show();
-            }
-
-            hide(){
-                this.$element.hide();
-            }
-
-            close(){}
-
-            hasActivityName(name){
-                return this.activityNames.indexOf(name) != -1;
-            }
-
-            //create button
-            addActivityBtn(name){
-                this.activityNames.push(name);
-                this.saveNames();
-                $(`<button>${name}</button>`).appendTo(this.$wrapper);
-                this.$element.scrollTop(this.$wrapper.height());
-            }
-
-            //save activities after modification
-            saveNames(){
-                let request = new XMLHttpRequest();
-                request.open('POST', './php/activityNames.php?');
-                request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-                request.onreadystatechange = () => {
-                    if(request.readyState == 4 && request.status == 200){
-                        console.log('SUCCESS');
-                    }
-                    if(request.status > 200){
-                        console.log("ERROR");
-                    }
-                    console.log(request.readyState + ' / ' + request.status);
-                };
-                request.send(`data=${JSON.stringify(activityNames)}&username=${username}`);
-            }
+        clear(){
+            this.$addActivityInfo.css('visibility', 'hidden');
+            this.$input.val('');
+            this.$addBtn.prop('disabled', true);
         }
-
-        const addActivityBox = new AddActivityBox('addActivity');
-        const menuBox = new MenuBox('menu');
-        const activitySwitcher = new ActivitySwitcher();
-
-        AbstractBox.$currentBox = activitySwitcher;
-        AbstractBox.boxes['addActivity'] = addActivityBox;
-        AbstractBox.boxes['menu'] = menuBox;
-        AbstractBox.boxes['activitySwitcher'] = activitySwitcher;
     }
+    
+    class MenuBox extends AbstractBox{
+        constructor(data){
+            super('menu');
+            this.$menuBtn = $('#menuBtn');
+            this.$menuBtn.on('click', ()=>{
+                AbstractBox.showBox(this.$menuBtn.attr('openBox'));
+            });
+            // open box on key up:
+            $(document).on('keyup', e => {        
+                if(e.which == 32){
+                    AbstractBox.showBox('menu');
+                }
+            });
+        }
+    }
+
+    class ActivitySwitcher{
+        static SCROLL = false;
+        constructor(data){
+            this.$element = $("#activitySwitcher");
+            this.$wrapper = $("#activitiesWrapper");
+
+            data.addEventListener(Data.UPDATE, ()=>{
+                this.$wrapper.empty();
+
+                data.activityNames.forEach(name => {
+                    let $b = $(`<button>${name}</button>`);
+                    if(name == data.buttonPressedName){
+                        $b.addClass('buttonPressed');
+                        $b.prop('disabled', true);
+                    }
+                    $b.appendTo(this.$wrapper);
+                });
+                if(ActivitySwitcher.SCROLL){
+                    this.$element.scrollTop(this.$wrapper.height());
+                    ActivitySwitcher.SCROLL = false;
+                }
+            });
+
+            //on switch activity
+            $(this.$wrapper).on('click', e => {
+                if(e.target.tagName == 'BUTTON'){
+                    //reset all activity buttons
+                    $('#activitiesWrapper button').each((index, elem) => {
+                        $(elem).removeClass('buttonPressed');
+                        $(elem).prop('disabled', false);
+
+                    });
+                    //set style to the pressed activity button
+                    $(e.target).addClass('buttonPressed');
+                    $(e.target).prop('disabled', true);
+                    
+                    //save activity event
+                    const stamp = {
+                        activity: $(e.target).html(),
+                        time: new Date().getTime()
+                    }
+                    console.log(JSON.stringify(stamp));
+                }
+            });
+
+            // open box on key up:
+            $(document).on('keyup', e => {
+                if(e.which == 27){
+                    AbstractBox.$currentBox.close();
+                }
+            });
+        }
+
+        show(){
+            this.$element.show();
+        }
+
+        hide(){
+            this.$element.hide();
+        }
+
+        close(){}
+    }
+
+    const data = new Data();
+    const addActivityBox = new AddActivityBox(data);
+    const menuBox = new MenuBox(data);
+    const activitySwitcher = new ActivitySwitcher(data);
+
+    AbstractBox.$currentBox = activitySwitcher;
+    AbstractBox.boxes['addActivity'] = addActivityBox;
+    AbstractBox.boxes['menu'] = menuBox;
+    AbstractBox.boxes['activitySwitcher'] = activitySwitcher;
 });

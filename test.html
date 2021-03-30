@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Test</title>
+    </head>
+    <body>
+        <script>
+            //'use strict'
+            
+            class Data extends EventTarget{
+                constructor(){
+                    super();
+                }
+            }
+
+            const data = new Data();
+            
+
+
+            class A{
+                constructor(data){
+
+                    let onUpdate = () => {
+                        console.log(this);
+                    }
+
+                    function onUpdate2(){
+                        console.log(this);
+                    }
+
+                    data.addEventListener('x', () => {
+                        console.log(this);
+                    });
+
+
+                    //data.addEventListener('x', ()=>{onUpdate()});
+                    //data.addEventListener('x', ()=>{console.log(this);});
+                }
+            }
+
+            let a = new A(data);
+
+
+
+
+
+
+
+
+            data.dispatchEvent(new Event('x'));
+
+        </script>
+    </body>
+</html>
