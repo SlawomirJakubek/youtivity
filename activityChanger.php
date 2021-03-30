@@ -38,29 +38,32 @@ function logout(){
     <link rel="stylesheet" type="text/css" href="./css/common.css" />
     <link rel="stylesheet" type="text/css" href="./css/activityChangerStyle.css" />
     <script src="./js/jquery-3.6.0.min.js"></script>
+    <script>
+        const username = '<?= $username ?>';
+    </script>
     <script defer src="./js/activityChangerJavaScript.js"></script>
 </head>
 <body>
     <main>
-        <section class="box" id="activities">
+        <section class="box" id="activitySwitcher">
             <div id="activitiesWrapper">
             </div>
         </section>
         <section class="box" id="addActivity">
             <h2>ADD ACTIVITY</h2><!--
-            --><button class="closeBtn" openBox="activities">X</button>
+            --><button class="closeBtn" openBox="activitySwitcher">X</button>
             <div class="box-content">
                 <p id="addActivityInfo">you already have an activity with that name</p>
                 <div>
                     <label for="activityName">name</label>
                     <input type="text" id="addActivityName" placeholder="e.g. sleeping"/>
                 </div>
-                <button id="addActivityBtn">add</button>
+                <button id="addActivityBtn" disabled>add</button>
             </div>
         </section>
         <section class="box" id="menu">
             <h2>MENU</h2><!--
-            --><button class="closeBtn"  openBox="activities">X</button>
+            --><button class="closeBtn"  openBox="activitySwitcher">X</button>
         </section>
     </main>
     <nav id="bottomBar">

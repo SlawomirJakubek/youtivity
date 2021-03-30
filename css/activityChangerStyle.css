@@ -16,9 +16,15 @@ main{
     height: 410px;
 }
 
+@media only screen and (max-height: 400px){
+    .box-content{
+        justify-content: flex-start;
+    }
+}
+
 /*activities box*/
-#activities {
-    overflow: scroll;
+#activitySwitcher {
+    overflow: auto;
     overflow-x: hidden;
 }
 
@@ -27,11 +33,17 @@ main{
     flex-direction: column;
 }
 
-#activities button{
+#activitySwitcher button{
     margin: 2px 30px;
     padding: 10px 0;
     width: 300px;
     border-radius: 10px;
+}
+
+.buttonPressed{
+    border-style: inset;
+    background-color: var(--colorLightnes2);
+    color: aliceblue;
 }
 
 /*add activity box*/
@@ -40,12 +52,11 @@ main{
 }
 
 #addActivityInfo{
-    position: absolute;
     color: crimson;
     background-color: aliceblue;
     border: 1px solid crimson;
-    top: 60px;
-    display: none;
+    margin: 30px 0 20px 0;
+    visibility: hidden;
 }
 
 /*BOTTOM BAR*/

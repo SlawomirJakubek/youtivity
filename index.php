@@ -199,6 +199,7 @@
         global $boxName;
         $file = fopen($userDataPath, "a");
         fputcsv($file, array($username, $password, $email, 'false', time(), $key, 'user'));
+        fclose($file);
         sendVerificationEmail($email, $key);
         info('INFO', 'An email has been sent to ' . $email . '. Please open it and follow the instructions provided. You can close this tab now. See you soon!');
         $boxName = 'menu';

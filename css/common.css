@@ -9,7 +9,6 @@
     --colorLightnes3: rgb(0, 160, 160);
     --colorLightnes2: rgb(0, 120, 120);
     --colorLightnes1: rgb(0, 80, 80);
-    --colorLightnes1: rgb(0, 80, 80);
     --colorLightnes0: rgb(0, 40, 40);
 
     /*DIMENSIONS*/
@@ -57,6 +56,10 @@ main, #bottomBar{
 
 button{
     cursor: pointer;
+}
+
+button:focus{
+    outline: 1px outset white;
 }
 
 /* L2 */
