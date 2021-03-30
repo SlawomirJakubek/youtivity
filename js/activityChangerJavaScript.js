@@ -7,28 +7,45 @@ $(document).ready(()=>{
 
         constructor(){
             super();
-            this.buttonPressedName = '';
+            this._currentActivity = null;
+            this.request = new XMLHttpRequest();
 
-            //load activities list
-            let request = new XMLHttpRequest();
-            request.open('POST', './php/activityNames.php?');
-            request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-            request.onreadystatechange = () => {
-                if(request.readyState == 4 && request.status == 200){
+            this.server('./php/activityNames.php?', `username=${username}`, () => {
+                if(this.request.readyState == 4 && this.request.status == 200){
                     console.log('SUCCESS');
                     let data = [];
-                    const r = request.responseText;
+                    const r = this.request.responseText;
                     if(r[0] == '[' && r[r.length - 1] == ']'){
-                        data = JSON.parse(request.responseText);
+                        data = JSON.parse(this.request.responseText);
                     }
                     this._activityNames = data;
-                    this.dispatchEvent(new Event(Data.UPDATE));
+                    this.server('./php/setGetActivity.php?', `username=${username}&action=get`, () => {
+                        if(this.request.responseText){
+                            this._currentActivity = JSON.parse(this.request.responseText);
+                        }
+                        this.dispatchEvent(new Event(Data.UPDATE));
+                    });
                 }
-                if(request.status > 200){
+                if(this.request.status > 200){
                     console.log("ERROR");
                 }
-            };
-            request.send(`username=${username}`);
+            });
+        }
+
+        get currentActivity(){
+            return this._currentActivity;
+        }
+
+        set currentActivity(value){
+            this._currentActivity = value;
+            this.server('./php/setGetActivity.php?', `username=${username}&action=set&name=${value.name}&time=${value.time}`, null);
+        }
+
+        server(filename, params, handler){
+            this.request.open('POST', filename);
+            this.request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            this.request.onreadystatechange = handler;
+            this.request.send(params);
         }
 
         get activityNames(){
@@ -195,10 +212,14 @@ $(document).ready(()=>{
 
                 data.activityNames.forEach(name => {
                     let $b = $(`<button>${name}</button>`);
-                    if(name == data.buttonPressedName){
-                        $b.addClass('buttonPressed');
-                        $b.prop('disabled', true);
+                    
+                    if(data.currentActivity){
+                        if(data.currentActivity.name == name){
+                            $b.addClass('buttonPressed');
+                            $b.prop('disabled', true);
+                        }
                     }
+
                     $b.appendTo(this.$wrapper);
                 });
                 if(ActivitySwitcher.SCROLL){
@@ -221,11 +242,10 @@ $(document).ready(()=>{
                     $(e.target).prop('disabled', true);
                     
                     //save activity event
-                    const stamp = {
-                        activity: $(e.target).html(),
+                    data.currentActivity = {
+                        name: $(e.target).html(),
                         time: new Date().getTime()
-                    }
-                    console.log(JSON.stringify(stamp));
+                    };
                 }
             });
 

@@ -3,9 +3,9 @@ if(!isset($_POST['username'])){
     exit();
 }
 define('USERNAME', 0);
-define('ACTIVITY_NAMES', 1);
+define('ACTIVITIES', 1);
 $username = $_POST['username'];
-$userDataPath = '../csv/activityNames.csv';
+$userDataPath = '../csv/activitiesData.csv';
 
 //get users data
 $usersData = array();
@@ -34,20 +34,20 @@ foreach($usersData as $userData){
 
 //check weather to save or retrieve data
 if(isset($_POST['data'])){
-    $activityNames = /*filter_var(*/$_POST['data']/*, FILTER_SANITIZE_STRING)*/;
+    $activities = /*filter_var(*/$_POST['data']/*, FILTER_SANITIZE_STRING)*/;
     //update or append
     if($hasData){
-        update(USERNAME, $username, ACTIVITY_NAMES, $activityNames);
+        update(USERNAME, $username, ACTIVITIES, $activities);
     }else{
         $file = fopen($userDataPath, "a");
-        fputcsv($file, array($username, $activityNames));
+        fputcsv($file, array($username,$activities));
         fclose($file);
     }
 }else{
     $data = '';
     foreach($usersData as $userData){
         if($userData[USERNAME] == $username){
-            $data = $userData[ACTIVITY_NAMES];
+            $data = $userData[ACTIVITIES];
         }
     }
     echo $data;
