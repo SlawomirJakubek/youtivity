@@ -36,39 +36,45 @@ function logout(){
     <meta id="themeColor" name="theme-color" content="rgb(0, 80, 80)" />
     <link rel="stylesheet" type="text/css" href="./css/normalize.css" />
     <link rel="stylesheet" type="text/css" href="./css/common.css" />
-    <link rel="stylesheet" type="text/css" href="./css/activityChangerStyle.css" />
+    <link rel="stylesheet" type="text/css" href="./css/app.css" />
     <script src="./js/jquery-3.6.0.min.js"></script>
     <script>
         const username = '<?= $username ?>';
     </script>
-    <script defer src="./js/activityChangerJavaScript.js"></script>
+    <script defer src="./js/app.js"></script>
 </head>
 <body>
     <main>
-        <section class="box" id="activitySwitcher">
-            <div id="activitiesWrapper">
+
+        <section class="box" id="switchBox">
+            <div id="switchBox-wrapper">
             </div>
         </section>
-        <section class="box" id="addActivity">
+
+        <section class="box" id="addBox">
             <h2>ADD ACTIVITY</h2><!--
-            --><button class="closeBtn" openBox="activitySwitcher">X</button>
+            --><button class="closeBtn" openBox="switchBox">X</button>
             <div class="box-content">
-                <p id="addActivityInfo">you already have an activity with that name</p>
+                <p id="addBox-info">you already have an activity with that name</p>
                 <div>
-                    <label for="activityName">name</label>
-                    <input type="text" id="addActivityName" placeholder="e.g. sleeping"/>
+                    <label for="addBox-name">name</label>
+                    <input type="text" id="addBox-name" placeholder="e.g. sleeping"/>
                 </div>
-                <button id="addActivityBtn" disabled>add</button>
+                <button id="addBox-addBtn" disabled>add</button>
             </div>
         </section>
-        <section class="box" id="menu">
+
+        <section class="box" id="menuBox">
             <h2>MENU</h2><!--
-            --><button class="closeBtn"  openBox="activitySwitcher">X</button>
+            --><button class="closeBtn"  openBox="switchBox">X</button>
+            <div class="box-content">
+            </div>
         </section>
+
     </main>
     <nav id="bottomBar">
-        <button id="menuBtn" openBox="menu">&#9776;</button>
-        <button id="addBtn"openBox="addActivity">&#10010;</button>
+        <button id="bottomBar-menuBtn" openBox="menuBox">&#9776;</button>
+        <button id="bottomBar-addBtn"openBox="addBox">&#10010;</button>
     </nav>
 </body>
 </html>

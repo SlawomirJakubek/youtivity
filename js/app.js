@@ -78,7 +78,6 @@ $(document).ready(()=>{
             request.send(`data=${JSON.stringify(this._activityNames)}&username=${username}`);
         }
     }
-
  
     class AbstractBox{
         static $currentBox;
@@ -107,6 +106,10 @@ $(document).ready(()=>{
             AbstractBox.showBox(this.$closeBtn.attr("openBox"));
         }
 
+        static addBoxByName(name, box){
+            AbstractBox.boxes[name] = box;
+        }
+
         static showBox(name){
             AbstractBox.$currentBox.hide();
             AbstractBox.$currentBox = AbstractBox.boxes[name];
@@ -114,18 +117,17 @@ $(document).ready(()=>{
         }
     }
 
-    class AddActivityBox extends AbstractBox{
+    class AddBox extends AbstractBox{
         constructor(data){
-            super('addActivity');
-            this.$openBtn = $('#addBtn');
-            this.$addBtn = $('#addActivityBtn');
-            this.$input = $('#addActivityName');
-            this.$info = $('#addActivityInfo');
-            this.$addActivityInfo = $('#addActivityInfo');
+            super('addBox');
+            this.$addBtn = $('#addBox-addBtn');
+            this.$input = $('#addBox-name');
+            this.$info = $('#addBox-info');
+            this.$openBtn = $('#bottomBar-addBtn');
             this.newName;
 
             const addActivity = () => {
-                ActivitySwitcher.SCROLL = true;
+                SwitchBox.SCROLL = true;
                 data.add(this.newName);
             };
 
@@ -154,7 +156,7 @@ $(document).ready(()=>{
                 let isFieldEmpty = name.trim().length == 0;
                 let isDuplicate = data.hasName(name);
                 //on input show or hide info
-                this.$addActivityInfo.css('visibility', isDuplicate ? 'visible' : 'hidden');
+                this.$info.css('visibility', isDuplicate ? 'visible' : 'hidden');
                 //on imput enable or disable "add activity" button
                 if(isFieldEmpty || isDuplicate){
                     this.$addBtn.prop('disabled', true);
@@ -167,19 +169,19 @@ $(document).ready(()=>{
             // open box on key up:
             $(document).on('keyup', e => {
                 if(e.which == 107){
-                    AbstractBox.showBox('addActivity');
+                    AbstractBox.showBox('addBox');
                     this.$input.focus();
                 }
             });
 
             data.addEventListener(Data.ADD, () => {
                 this.clear();
-                AbstractBox.showBox('activitySwitcher');
+                AbstractBox.showBox('switchBox');
             });
         }
 
         clear(){
-            this.$addActivityInfo.css('visibility', 'hidden');
+            this.$info.css('visibility', 'hidden');
             this.$input.val('');
             this.$addBtn.prop('disabled', true);
         }
@@ -187,25 +189,25 @@ $(document).ready(()=>{
     
     class MenuBox extends AbstractBox{
         constructor(data){
-            super('menu');
-            this.$menuBtn = $('#menuBtn');
+            super('menuBox');
+            this.$menuBtn = $('#bottomBar-menuBtn');
             this.$menuBtn.on('click', ()=>{
                 AbstractBox.showBox(this.$menuBtn.attr('openBox'));
             });
             // open box on key up:
             $(document).on('keyup', e => {        
                 if(e.which == 32){
-                    AbstractBox.showBox('menu');
+                    AbstractBox.showBox('menuBox');
                 }
             });
         }
     }
 
-    class ActivitySwitcher{
+    class SwitchBox{
         static SCROLL = false;
         constructor(data){
-            this.$element = $("#activitySwitcher");
-            this.$wrapper = $("#activitiesWrapper");
+            this.$element = $("#switchBox");
+            this.$wrapper = $("#switchBox-wrapper");
 
             data.addEventListener(Data.UPDATE, ()=>{
                 this.$wrapper.empty();
@@ -222,9 +224,9 @@ $(document).ready(()=>{
 
                     $b.appendTo(this.$wrapper);
                 });
-                if(ActivitySwitcher.SCROLL){
+                if(SwitchBox.SCROLL){
                     this.$element.scrollTop(this.$wrapper.height());
-                    ActivitySwitcher.SCROLL = false;
+                    SwitchBox.SCROLL = false;
                 }
             });
 
@@ -232,7 +234,7 @@ $(document).ready(()=>{
             $(this.$wrapper).on('click', e => {
                 if(e.target.tagName == 'BUTTON'){
                     //reset all activity buttons
-                    $('#activitiesWrapper button').each((index, elem) => {
+                    $('#switchBox-wrapper button').each((index, elem) => {
                         $(elem).removeClass('buttonPressed');
                         $(elem).prop('disabled', false);
 
@@ -269,12 +271,12 @@ $(document).ready(()=>{
     }
 
     const data = new Data();
-    const addActivityBox = new AddActivityBox(data);
+    const addBox = new AddBox(data);
     const menuBox = new MenuBox(data);
-    const activitySwitcher = new ActivitySwitcher(data);
+    const switchBox = new SwitchBox(data);
 
-    AbstractBox.$currentBox = activitySwitcher;
-    AbstractBox.boxes['addActivity'] = addActivityBox;
-    AbstractBox.boxes['menu'] = menuBox;
-    AbstractBox.boxes['activitySwitcher'] = activitySwitcher;
+    AbstractBox.$currentBox = switchBox;
+    AbstractBox.addBoxByName('addBox', addBox);
+    AbstractBox.addBoxByName('menuBox', menuBox);
+    AbstractBox.addBoxByName('switchBox', switchBox);
 });

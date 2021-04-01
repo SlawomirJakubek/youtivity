@@ -73,7 +73,7 @@
         }
         //login
         $_SESSION["username"] = $username;
-        header('Location: activityChanger.php');
+        header('Location: app.php');
     }
 
     function isUserRegistered($username){
@@ -281,7 +281,7 @@
     <meta id="themeColor" name="theme-color" content="rgb(0, 80, 80)" />
     <link rel="stylesheet" type="text/css" href="./css/normalize.css" />
     <link rel="stylesheet" type="text/css" href="./css/common.css" />
-    <link rel="stylesheet" type="text/css" href="./css/indexStyle.css" />
+    <link rel="stylesheet" type="text/css" href="./css/loginRegister.css" />
     <script src="./js/jquery-3.6.0.min.js"></script>
     <script>
         let boxName = '<?= $boxName; ?>';
@@ -299,7 +299,7 @@
             boxName = 'menu';
         }
     </script>
-    <script defer src="./js/indexJavaScript.js"></script>
+    <script defer src="./js/loginRegister.js"></script>
 </head>
 <body>
     <header>
