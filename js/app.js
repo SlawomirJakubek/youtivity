@@ -1,4 +1,10 @@
 $(document).ready(()=>{
+    $('.box').each((index, elem) => {
+        if($(elem).attr('id') != 'switchBox'){
+            $(elem).hide();
+        }
+    });
+
     class Data extends EventTarget{
         static ADD = 'ADD';
         static REMOVE = 'REMOVE';

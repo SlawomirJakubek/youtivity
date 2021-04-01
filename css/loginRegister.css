@@ -1,76 +1,32 @@
-:root{
-    /*DIMENSIONS*/
-    --mainHeight: 380px;
-}
-
-/* L1 */
-header{
-    width: var(--mainWidth);
-    height: var(--h1Height);
-    background-color: var(--colorLightnes1);
-    /*border-radius: var(--borderRadius);*/
-}
-
-main{
-    height: var(--mainHeight);
-}
-
-/* L2 */
-#login, #register, #about, #info{ 
-    display: none;
-}
-
-/* BOX */
-
-/* BOX MENU */
-.box#menu{
-    display: flex;
-    flex-wrap: wrap;
-    align-content: center;
-}
 .box#menu button{
-    width: 100%;
-    margin: 10px 100px;
+    width: 40%;
+    margin: 10px 0px;
     height: 60px;
     border-radius: 10px;
 }
 
-/* BOX ABOUT CONTENT */
+/* BOX ABOUT */
+#about .box-content{
+    display: flex;
+    flex-direction: column;
+    align-content: space-between;
+}
 
-.box#about .box-content p, .box#info .box-content p{
+#about-app{
+    height: 90%;
+    display: flex;
+    align-items: center;
+}
+
+#about-copyrights{
+    height: 10%;
+}
+
+#about-app p{
     padding: 0 50px;
-    font-size: 1.4rem;
+    font-size: 1.1rem;
 }
 
-/* MEDIA QUERIES */
-/*
-@media only screen and (max-height: 508px){
-    header, footer{
-        display: none;
-    }
-    main{
-        height: 100%;
-    }
-}
-
-@media only screen and (max-height: 380px){
-    form button, .box h2, .box button{
-        display: none;
-    }
-    .box{
-        height: 300px;
-    }
-    form{
-        height: 300px;
-        align-content:center;
-    }
-}
-
-@media only screen and (max-height: 300px){
-    .box{
-        height: 200px;
-    }
-    form{
-        height: 200px;
-    }
+#about-copyrights p{
+    font-size: .8rem;
 }

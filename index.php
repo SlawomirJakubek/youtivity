@@ -3,7 +3,8 @@
     $infoHeader = '';
     $infoBody = '';
     $info = false;
-    $boxName = 'menu';
+    $goToBoxName = 'menu';
+    $currentBoxName = 'menu';
     $username = '';
     $password = '';
     $rUsername = '';
@@ -45,14 +46,16 @@
         unset($_SESSION['loggedOut']);
         session_destroy();
         $info = true;
-        $boxName = 'login';
+        $goToBoxName = 'login';
+        $currentBoxName = 'info';
         $infoHeader = "YOU ARE LOGGED OUT";
         $infoBody = "We don't know if you logged in on your personal device or not. Therefore to keep your data secure and due to your inactivity you had been logged out. To turn this feature off (for this device) go to settings";
     }
 
     function login($username, $password){
-        global $boxName;
-        $boxName = 'login';
+        global $goToBoxName;
+        $goToBoxName = 'login';
+        $currentBoxName = 'info';
         //validate username
         if(!isUserRegistered($username)){
             info('ERROR', 'wrong username or password');
@@ -147,8 +150,9 @@
     }
 
     function register($username, $password, $email){
-        global $boxName;
-        $boxName = 'register';
+        global $goToBoxName;
+        $goToBoxName = 'register';
+        $currentBoxName = 'info';
         //validate username
         if(isUserRegistered($username)){
             info('USERNAME TAKEN', 'this username is already taken, please choose another one');
@@ -196,13 +200,14 @@
             $key = rand();
         }
         global $userDataPath;
-        global $boxName;
+        global $goToBoxName;
         $file = fopen($userDataPath, "a");
         fputcsv($file, array($username, $password, $email, 'false', time(), $key, 'user'));
         fclose($file);
         sendVerificationEmail($email, $key);
         info('INFO', 'An email has been sent to ' . $email . '. Please open it and follow the instructions provided. You can close this tab now. See you soon!');
-        $boxName = 'menu';
+        $goToBoxName = 'menu';
+        $currentBoxName = 'info';
 
         //clear variables so they won't print in the register form
         global $rUsername;
@@ -278,89 +283,104 @@
     <meta name="keywords" content="activity, track, monitor" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta charset="utf-8" />
-    <meta id="themeColor" name="theme-color" content="rgb(0, 80, 80)" />
+    <meta id="themeColor" name="theme-color" content="rgb(204, 241, 255)" />
     <link rel="stylesheet" type="text/css" href="./css/normalize.css" />
     <link rel="stylesheet" type="text/css" href="./css/common.css" />
     <link rel="stylesheet" type="text/css" href="./css/loginRegister.css" />
     <script src="./js/jquery-3.6.0.min.js"></script>
     <script>
-        let boxName = '<?= $boxName; ?>';
-        function showBox(){
-            $menu = $("#menu");
-            $login = $("#login");
-            $register = $("#register");
-            switch(boxName){
-                case 'login': $login.show();
-                break;
-                case 'register': $register.show();
-                break;
-                default: $menu.show();
-            }
-            boxName = 'menu';
-        }
+        let goToBoxName = '<?= $goToBoxName; ?>';
+        let currentBoxName = '<?= $currentBoxName; ?>';
     </script>
     <script defer src="./js/loginRegister.js"></script>
 </head>
 <body>
-    <header>
-        <h1>YOUTIVITY</h1>
-    </header>
-    <main>
-        <nav class="box" id="menu" <?= $info ? 'style="display: none"' : ''; ?>>
-            <button id="login-btn">LOGIN</button>
-            <button id="register-btn">REGISTER</button>
-            <button id="about-btn">ABOUT</button>
-        </nav>  
-        <section class="box" id="login">
-            <h2>LOGIN</h2><!--
-            --><button class="closeBtn">X</button><!--
-            --><form class="box-content" method="post" autocomplete="on">
-                <div>
-                    <label for="login-name">username</label>
-                    <input id="login-name" name="username" type="text" minlength="5" maxlength="30" value="<?= $username ?>" required />
+    <div id="app">
+        <header>
+            <h1>YOUTIVITY</h1>
+        </header>
+        <main>
+            <nav class="box" id="menu" <?= $info ? 'style="display: none"' : ''; ?>>
+                <button id="loginBtn">LOGIN</button>
+                <button id="registerBtn">REGISTER</button>
+                <button id="aboutBtn">ABOUT</button>
+            </nav>  
+            <section class="box" id="login">
+                <div id="box-header">
+                    <h2>LOGIN</h2><!--
+                 --><button class="closeBtn">X</button>
                 </div>
-                <div>
-                    <label for="login-password">password</label>
-                    <input id="login-password" name="password" type="password" minlength="8" maxlength="30" autocomplete="on" value="<?= $password ?>" required />
-                </div>
-                <button>login</button>
-            </form>
-        </section>
-        <section class="box" id="register">
-            <h2>REGISTER</h2><!--
-                --><button class="closeBtn">X</button>
                 <form class="box-content" method="post" autocomplete="on">
-                <div>
-                    <label for="register-name">username</label>
-                    <input id="register-name" name="rUsername" type="text" minlength="5" maxlength="30" value="<?= $rUsername ?>" required />
+                    <div>
+                        <label for="login-name">username</label>
+                        <input id="login-name" name="username" type="text" minlength="5" maxlength="30" value="<?= $username ?>" required />
+                    </div>
+                    <div>
+                        <label for="login-password">password</label>
+                        <input id="login-password" name="password" type="password" minlength="8" maxlength="30" autocomplete="on" value="<?= $password ?>" required />
+                    </div>
+                    <button>login</button>
+                </form>
+            </section>
+            <section class="box" id="register">
+                <div id="box-header">
+                    <h2>REGISTER</h2><!--
+                 --><button class="closeBtn">X</button>
                 </div>
-                <div>
-                    <label for="register-password">password</label>
-                    <input id="register-password" name="rPassword" type="password" minlength="8" maxlength="30" autocomplete="on" value="<?= $rPassword ?>" required />
+                <form class="box-content" method="post" autocomplete="on">
+                    <div>
+                        <label for="register-name">username</label>
+                        <input id="register-name" name="rUsername" type="text" minlength="5" maxlength="30" value="<?= $rUsername ?>" required />
+                    </div>
+                    <div>
+                        <label for="register-password">password</label>
+                        <input id="register-password" name="rPassword" type="password" minlength="8" maxlength="30" autocomplete="on" value="<?= $rPassword ?>" required />
+                    </div>
+                    <div>
+                        <label for="register-email">email</label>
+                        <input id="register-email" name="rEmail" type="text" maxlength="100" value="<?= $rEmail ?>" required />
+                    </div>
+                    <button>register</button>
+                </form>
+            </section>
+            <section class="box" id="about">
+                <div id="box-header">
+                    <h2>ABOUT</h2><!--
+                 --><button class="closeBtn">X</button>
                 </div>
-                <div>
-                    <label for="register-email">email</label>
-                    <input id="register-email" name="rEmail" type="text" maxlength="100" value="<?= $rEmail ?>" required />
+                <div class="box-content">
+                    <div id="about-app">
+                        <p>Youtivity is an app that helps you monitor and control your activity 24/7.<br><br>Very simple and intuitive but amazingly powerful.<br><br>Check it out yourself!</p>
+                    </div>
+                    <div id="about-copyrights">
+                        <p>&#169; Slawomir Jakubek 2021</p>
+                    </div>
                 </div>
-                <button>register</button>
-            </form>
-        </section>
-        <section class="box" id="about">
-            <h2>ABOUT</h2><!--
-            --><button class="closeBtn">X</button>
-            <div class="box-content">
-                <p>Youtivity is an app that helps you monitor and control your activity 24/7.<br><br>Very simple and intuitive but amazingly powerful.<br><br>Check it out yourself!</p>
-            </div>
-        </section>
-        <section class="box" id="info" <?= $info ? 'style="display: block"' : ''; ?>>
-            <h2 id="info-header"><?= $infoHeader ?></h2><!--
-            --><button class="closeBtn">X</button>
-            <div class="box-content" id="info-container">
-                <p id="info-body"><?= $infoBody ?></p>
-            </div>
-        </section>
-    </main>
-    <footer id="bottomBar">
+            </section>
+            <section class="box" id="author">
+                <div id="box-header">
+                    <h2>AUTHOR</h2><!--
+                    --><button class="closeBtn">X</button>
+                </div>
+                <div class="box-content" id="info-container">
+                    <p id="info-body">Hi, my name is Slawomir Jakubek and I am a software developer from Telford, England.</p>
+                    <p>You can contact me by:</p>
+                    <p><a href="mailto:contact@jakubek.co.uk">email</a></p>
+                    <p>or you can visit my website @ <a href="https://jakubek.co.uk" target="_blank">jakubek.co.uk</a></p>
+                </div>
+            </section>
+            <section class="box" id="info" <?= $info ? 'style="display: block"' : ''; ?>>
+                <div id="box-header">
+                    <h2 id="info-header"><?= $infoHeader ?></h2><!--
+                    --><button class="closeBtn">X</button>
+                </div>
+                <div class="box-content" id="info-container">
+                    <p id="info-body"><?= $infoBody ?></p>
+                </div>
+            </section>
+        </main>
+    </div>
+    <footer>
         <button id="authorBtn">AUTHOR</button>
         <button id="copyrightsBtn">COPYRIGHTS</button>
     </footer>

@@ -33,7 +33,7 @@ function logout(){
     <meta name="keywords" content="activity, track, monitor" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta charset="utf-8" />
-    <meta id="themeColor" name="theme-color" content="rgb(0, 80, 80)" />
+    <meta id="themeColor" name="theme-color" content="rgb(204, 241, 255)" />
     <link rel="stylesheet" type="text/css" href="./css/normalize.css" />
     <link rel="stylesheet" type="text/css" href="./css/common.css" />
     <link rel="stylesheet" type="text/css" href="./css/app.css" />
@@ -44,37 +44,46 @@ function logout(){
     <script defer src="./js/app.js"></script>
 </head>
 <body>
-    <main>
+    <div id="app">
+        <header>
+            <h1>YOUTIVITY</h1>
+        </header>
+        <main>
 
-        <section class="box" id="switchBox">
-            <div id="switchBox-wrapper">
-            </div>
-        </section>
-
-        <section class="box" id="addBox">
-            <h2>ADD ACTIVITY</h2><!--
-            --><button class="closeBtn" openBox="switchBox">X</button>
-            <div class="box-content">
-                <p id="addBox-info">you already have an activity with that name</p>
-                <div>
-                    <label for="addBox-name">name</label>
-                    <input type="text" id="addBox-name" placeholder="e.g. sleeping"/>
+            <section class="box" id="switchBox">
+                <div id="switchBox-wrapper">
                 </div>
-                <button id="addBox-addBtn" disabled>add</button>
-            </div>
-        </section>
+                <nav id="">
+                    <button id="bottomBar-menuBtn" openBox="menuBox">&#9776;</button>
+                    <button id="bottomBar-addBtn"openBox="addBox">&#10010;</button>
+                </nav>
+            </section>
 
-        <section class="box" id="menuBox">
-            <h2>MENU</h2><!--
-            --><button class="closeBtn"  openBox="switchBox">X</button>
-            <div class="box-content">
-            </div>
-        </section>
+            <section class="box" id="addBox">
+                <h2>ADD ACTIVITY</h2><!--
+                --><button class="closeBtn" openBox="switchBox">X</button>
+                <div class="box-content">
+                    <p id="addBox-info">you already have an activity with that name</p>
+                    <div>
+                        <label for="addBox-name">name</label>
+                        <input type="text" id="addBox-name" placeholder="e.g. sleeping"/>
+                    </div>
+                    <button id="addBox-addBtn" disabled>add</button>
+                </div>
+            </section>
 
-    </main>
-    <nav id="bottomBar">
-        <button id="bottomBar-menuBtn" openBox="menuBox">&#9776;</button>
-        <button id="bottomBar-addBtn"openBox="addBox">&#10010;</button>
-    </nav>
+            <section class="box" id="menuBox">
+                <h2>MENU</h2><!--
+                --><button class="closeBtn"  openBox="switchBox">X</button>
+                <div class="box-content">
+                </div>
+            </section>
+
+        </main>
+    </div>
+    <footer>
+        <button id="authorBtn">AUTHOR</button>
+        <button id="copyrightsBtn">COPYRIGHTS</button>
+    </footer>
 </body>
 </html>
