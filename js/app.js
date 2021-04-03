@@ -9,38 +9,62 @@
         static ADD = 'ADD';
         static REMOVE = 'REMOVE';
         static UPDATE = 'UPDATE';
+        static UPDATE_HISTORY = 'UPDATE_HISTORY';
         static ERROR = 'ERROR';
 
         constructor(){
             super();
             this._currentActivity = null;
-            this.request = new XMLHttpRequest();
+            this._history = null;
 
-            this.server('./php/activityNames.php?', `username=${username}`, () => {
-                if(this.request.readyState == 4 && this.request.status == 200){
-                    console.log('SUCCESS');
+            this.server('./php/activityNames.php?', `username=${username}`, e => {
+                if(e.target.readyState == 4 && e.target.status == 200){
+                    console.log('ACTIVITY NAMES SET');
                     let data = [];
-                    const r = this.request.responseText;
+                    const r = e.target.responseText;
                     if(r[0] == '[' && r[r.length - 1] == ']'){
-                        data = JSON.parse(this.request.responseText);
+                        data = JSON.parse(e.target.responseText);
                     }
                     this._activityNames = data;
-                    this.server('./php/setGetActivity.php?', `username=${username}&action=get`, () => {
-                        if(this.request.readyState == 4 && this.request.status == 200){
-
-                            if(this.request.responseText){
-                                this._currentActivity = JSON.parse(this.request.responseText);
+                    this.server('./php/setGetActivity.php?', `username=${username}&action=get`, e => {
+                        if(e.target.readyState == 4 && e.target.status == 200){
+                            console.log('CURRENT ACTIVITY SET');
+                            if(e.target.responseText){
+                                this._currentActivity = JSON.parse(e.target.responseText);
                             }
-                            console.log('doing: this.dispatchEvent(new Event(Data.UPDATE));');
+
                             this.dispatchEvent(new Event(Data.UPDATE));
+                        }
+                        if(e.target.status > 200){
+                            console.log("CURRENT ACTIVITY SET ERROR");
                         }
 
                     });
                 }
-                if(this.request.status > 200){
-                    console.log("ERROR");
+                if(e.target.status > 200){
+                    console.log("ACTIVITY NAMES SET ERROR");
                 }
             });
+
+            this.server('./php/setGetActivity.php?', `username=${username}&action=getAll`, e => {
+                if(e.target.readyState == 4 && e.target.status == 200){
+                    console.log('ACTIVITY HISTORY SET');
+                    let data = [];
+                    const r = e.target.responseText;
+                    if(r[0] == '[' && r[r.length - 1] == ']'){
+                        data = JSON.parse(e.target.responseText);
+                    }
+                    this._history = data;
+                    this.dispatchEvent(new Event(Data.UPDATE_HISTORY));
+                }
+                if(e.target.status > 200){
+                    console.log("ACTIVITY HISTORY SET ERROR");
+                }
+            });
+        }
+
+        get history(){
+            return this._history;
         }
 
         get currentActivity(){
@@ -53,10 +77,11 @@
         }
 
         server(filename, params, handler){
-            this.request.open('POST', filename);
-            this.request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-            this.request.onreadystatechange = handler;
-            this.request.send(params);
+            let request = new XMLHttpRequest();
+            request.open('POST', filename);
+            request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            request.onreadystatechange = handler;
+            request.send(params);
         }
 
         get activityNames(){
@@ -79,7 +104,7 @@
             request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
             request.onreadystatechange = () => {
                 if(request.readyState == 4 && request.status == 200){
-                    console.log('FROM SAVE ON 4/200: this.dispatchEvent(new Event(Data.UPDATE));');
+
                     this.dispatchEvent(new Event(this.currentEventType));
                     this.dispatchEvent(new Event(Data.UPDATE));
                 }
@@ -113,7 +138,6 @@
             if(openButtonId){
                 this.$openBtn = $(`#${openButtonId}`);
                 this.$openBtn.on('click', {toBox: this, open: true }, this.open);
-                this.$openBtn.on('click', ()=>{console.log("YEAH!")});
             }
             if(keyCode){
                 $(document).on('keyup', e => {        
@@ -224,10 +248,6 @@
     class MenuBox extends AbstractBox{
         constructor(data, openButtonId, keyCode){
             super('menuBox', openButtonId, keyCode);
-            this.$menuBtn = $('#bottomBar-menuBtn');
-            this.$menuBtn.on('click', ()=>{
-                this.open(this.$menuBtn.attr('openBox'));
-            });
         }
     }
 
@@ -267,6 +287,50 @@
         }
     }
 
+    class HistoryBox extends AbstractBox{
+        constructor(data, openButtonId){
+            super('historyBox', openButtonId);
+            this.$wrapper = $('#historyBox-wrapper');
+            data.addEventListener(Data.UPDATE_HISTORY, () => {
+                console.log(data.history);
+                const $table = $('#historyBox-wrapper table');
+
+                for(let i = 1; i < data.history.length; i++){
+
+                    const date = new Date(parseInt(data.history[i][1]));
+
+                    //hour:minute
+                    let tr = '<tr><td>' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds() + '</td>';
+
+                    //activity name
+                    tr += '<td>' + data.history[i][0] + '</td>';
+
+                    //duration
+                    let nextDate;
+                    if(i == data.history.length - 1){
+                        nextDate = new Date();
+                        
+                    }else{
+                        nextDate = new Date(parseInt(data.history[i + 1][1]));
+                    }
+                    const durationInMiliseconds = nextDate - date;
+                    //const h = durationInMiliseconds / 1000 * 60 * 60;
+                    //const m = durationInMiliseconds % (1000 * 60 * 60);
+                    const hours = Math.floor((durationInMiliseconds % 86400000) / 3600000);
+                    const minutes = Math.round(((durationInMiliseconds % 86400000) % 3600000) / 60000);
+                    const seconds = Math.round((((durationInMiliseconds % 86400000) % 3600000) % 60000) / 1000);
+
+                    tr += '<td>' + hours + ':' + minutes + ':' + seconds + '</td>';
+
+                    tr += '</tr>';
+
+                    $(tr).appendTo($table);
+                }
+
+            });
+        }
+    }
+
     class SwitchBox{
         static SCROLL = false;
         constructor(data){
@@ -276,11 +340,9 @@
             data.addEventListener(Data.UPDATE, ()=>{
 
                 $('#switchBox-wrapper .activityBtn').remove();
-                console.log(data.activityNames.length);
 
                 data.activityNames.forEach(name => {
 
-                    console.log('appending button:' + name);
                     let $b = $(`<button class="activityBtn">${name}</button>`);
                     
                     if(data.currentActivity){
@@ -294,6 +356,8 @@
                 });
 
                 addBox.$openBtn.appendTo(this.$wrapper);
+                menuBox.$openBtn.appendTo(this.$wrapper);
+                historyBox.$openBtn.appendTo(this.$wrapper);
 
                 if(SwitchBox.SCROLL){
                     this.$element.scrollTop(this.$wrapper.height());
@@ -301,9 +365,11 @@
                 }
             });
 
+            const navButtons = ['openAddBtn', 'openMenuBtn', 'openHistoryBtn'];
+
             //on switch activity
             $(this.$wrapper).on('click', e => {
-                if(e.target.tagName == 'BUTTON' && $(e.target).attr('id') != 'openAddBtn'){
+                if(e.target.tagName == 'BUTTON' && navButtons.indexOf($(e.target).attr('id')) == -1){
                     //reset all activity buttons
                     $('#switchBox-wrapper button').each((index, elem) => {
                         $(elem).removeClass('buttonPressed');
@@ -341,6 +407,7 @@
     const authorBox = new AuthorBox('openAuthorBtn');
     const copyrightsBox = new CopyrightsBox('openCopyrightsBtn');
     const infoBox = new InfoBox();
+    const historyBox = new HistoryBox(data, 'openHistoryBtn');
 
     AbstractBox.$currentBox = switchBox;
 //});

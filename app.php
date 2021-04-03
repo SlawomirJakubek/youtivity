@@ -52,18 +52,32 @@ function logout(){
 
             <section class="box" id="switchBox">
                 <div id="switchBox-wrapper">
-                    <button id="openAddBtn"openBox="addBox">&#10010;</button>
+                    <button id="openAddBtn">&#10010;</button>
+                    <button id="openMenuBtn">&#9776;</button>
+                    <button id="openHistoryBtn">&#8461;</button>
                 </div>
-                
-                <!--<nav>
-                    <button id="openMenuBtn" openBox="menuBox">&#9776;</button>
-                </nav>-->
+            </section>
+
+            <section class="box" id="historyBox">
+                <div class="box-header">
+                    <h2>HISTORY</h2><!--
+                    --><button class="closeBtn">X</button>
+                </div>
+                <div class="box-content" id="historyBox-wrapper">
+                    <table>
+                        <tr>
+                            <th>DATE</th>
+                            <th>ACTIVITY</th>
+                            <th>DURATION</th>
+                        </tr>
+                    </table>
+                </div>
             </section>
 
             <section class="box" id="addBox">
                 <div class="box-header">
                     <h2>ADD ACTIVITY</h2><!--
-                    --><button class="closeBtn" openBox="switchBox">X</button>
+                    --><button class="closeBtn">X</button>
                 </div>
                 <div class="box-content">
                     <p id="addBox-info" class="warning"></p>

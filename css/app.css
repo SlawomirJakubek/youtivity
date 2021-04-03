@@ -7,14 +7,25 @@
     background-color: lightgreen;
 }
 
-#switchBox{
+#switchBox, #historyBox-wrapper{
     overflow-x: hidden;
     overflow-y: scroll;
 }
 
 #openAddBtn{
-    background-color: var(--mainBgColor);
     padding-left: 30px;
     padding-right: 30px;
-    background-color: rgb(126 221 255);
+    background-color: rgb(126, 221, 255);
+}
+
+#openMenuBtn{
+    padding-left: 30px;
+    padding-right: 30px;
+    background-color: rgb(126, 221, 255);
+}
+
+#openHistoryBtn{
+    padding-left: 30px;
+    padding-right: 30px;
+    background-color: rgb(126, 221, 255);
 }

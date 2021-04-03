@@ -3,6 +3,7 @@
     define("USERNAME", "username");
     define("ACTION", "action");
     define("GET", "get");
+    define("GET_ALL", "getAll");
     define("SET", "set");
     define("NAME", "name");
     define("TIME", "time");
@@ -14,7 +15,7 @@
     $username = $_REQUEST[USERNAME];
     $filename = "../csv/history/" . $username . ".csv";
 
-    if($_REQUEST[ACTION] == GET){
+    if($_REQUEST[ACTION] == GET || $_REQUEST[ACTION] == GET_ALL){
 
         if(!file_exists($filename)){
             exit();
@@ -23,13 +24,18 @@
         $file = fopen($filename, "r");
         $copy = array();
         $line = fgetcsv($file);
-        
+
         while($line){
             array_push($copy, $line);
             $line = fgetcsv($file);
         }
 		
         fclose($file);
+
+        if($_REQUEST[ACTION] == GET_ALL){
+            echo json_encode($copy);
+            exit();
+        }
 
         $lastActivity = $copy[count($copy) - 1];
         $lastActivity = array(
@@ -38,8 +44,6 @@
         );
 
         echo json_encode($lastActivity);
-
-        //echo json_encode($lastActivity);
 
     }else if($_REQUEST[ACTION] == SET && isset($_REQUEST[NAME]) && isset($_REQUEST[TIME])){
 
