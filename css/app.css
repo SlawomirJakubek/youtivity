@@ -1,0 +1,20 @@
+#switchBox{
+    border-radius: var(--borderRadius);
+    padding: 10px 15px;
+}
+
+#switchBox-wrapper button:disabled{
+    background-color: lightgreen;
+}
+
+#switchBox{
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+#openAddBtn{
+    background-color: var(--mainBgColor);
+    padding-left: 30px;
+    padding-right: 30px;
+    background-color: rgb(126 221 255);
+}

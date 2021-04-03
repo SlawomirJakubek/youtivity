@@ -301,50 +301,56 @@
         </header>
         <main>
             <nav class="box" id="menu" <?= $info ? 'style="display: none"' : ''; ?>>
-                <button id="loginBtn">LOGIN</button>
-                <button id="registerBtn">REGISTER</button>
-                <button id="aboutBtn">ABOUT</button>
+                <div class="box-content">
+                    <button id="loginBtn">LOGIN</button>
+                    <button id="registerBtn">REGISTER</button>
+                    <button id="aboutBtn">ABOUT</button>
+                </div>
             </nav>  
             <section class="box" id="login">
-                <div id="box-header">
+                <div class="box-header">
                     <h2>LOGIN</h2><!--
                  --><button class="closeBtn">X</button>
                 </div>
                 <form class="box-content" method="post" autocomplete="on">
-                    <div>
+                    <div class="formElement">
                         <label for="login-name">username</label>
                         <input id="login-name" name="username" type="text" minlength="5" maxlength="30" value="<?= $username ?>" required />
                     </div>
-                    <div>
+                    <div class="formElement">
                         <label for="login-password">password</label>
                         <input id="login-password" name="password" type="password" minlength="8" maxlength="30" autocomplete="on" value="<?= $password ?>" required />
                     </div>
-                    <button>login</button>
+                    <div class="formElement">
+                        <button>login</button>
+                    </div>
                 </form>
             </section>
             <section class="box" id="register">
-                <div id="box-header">
+                <div class="box-header">
                     <h2>REGISTER</h2><!--
                  --><button class="closeBtn">X</button>
                 </div>
                 <form class="box-content" method="post" autocomplete="on">
-                    <div>
+                    <div class="formElement">
                         <label for="register-name">username</label>
                         <input id="register-name" name="rUsername" type="text" minlength="5" maxlength="30" value="<?= $rUsername ?>" required />
                     </div>
-                    <div>
+                    <div class="formElement">
                         <label for="register-password">password</label>
                         <input id="register-password" name="rPassword" type="password" minlength="8" maxlength="30" autocomplete="on" value="<?= $rPassword ?>" required />
                     </div>
-                    <div>
-                        <label for="register-email">email</label>
+                    <div class="formElement">
+                        <label for="register-email">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;email</label>
                         <input id="register-email" name="rEmail" type="text" maxlength="100" value="<?= $rEmail ?>" required />
                     </div>
-                    <button>register</button>
+                    <div class="formElement">
+                        <button>register</button>
+                    </div>
                 </form>
             </section>
             <section class="box" id="about">
-                <div id="box-header">
+                <div class="box-header">
                     <h2>ABOUT</h2><!--
                  --><button class="closeBtn">X</button>
                 </div>
@@ -352,29 +358,34 @@
                     <div id="about-app">
                         <p>Youtivity is an app that helps you monitor and control your activity 24/7.<br><br>Very simple and intuitive but amazingly powerful.<br><br>Check it out yourself!</p>
                     </div>
-                    <div id="about-copyrights">
-                        <p>&#169; Slawomir Jakubek 2021</p>
+                    <div>
+                        <p class="copyrights">&#169; Slawomir Jakubek <?= date("Y"); ?></p>
                     </div>
                 </div>
             </section>
             <section class="box" id="author">
-                <div id="box-header">
+                <div class="box-header">
                     <h2>AUTHOR</h2><!--
                     --><button class="closeBtn">X</button>
                 </div>
-                <div class="box-content" id="info-container">
-                    <p id="info-body">Hi, my name is Slawomir Jakubek and I am a software developer from Telford, England.</p>
-                    <p>You can contact me by:</p>
-                    <p><a href="mailto:contact@jakubek.co.uk">email</a></p>
-                    <p>or you can visit my website @ <a href="https://jakubek.co.uk" target="_blank">jakubek.co.uk</a></p>
+                <div class="box-content">
+                    <div>
+                        <p>Hi, my name is Slawomir Jakubek and I am a software developer from Telford, England.</p>
+                        <p>You can contact me by:</p>
+                        <p><a href="mailto:contact@jakubek.co.uk">email</a></p>
+                        <p>or you can visit my website @ <a href="https://jakubek.co.uk" target="_blank">jakubek.co.uk</a></p>
+                    </div>
+                    <div>
+                        <p class="copyrights">&#169; Slawomir Jakubek <?= date("Y"); ?></p>
+                    </div>
                 </div>
             </section>
-            <section class="box" id="info" <?= $info ? 'style="display: block"' : ''; ?>>
-                <div id="box-header">
+            <section class="box" id="info" style="display: <?= $info ? 'block' : 'none'; ?>">
+                <div class="box-header">
                     <h2 id="info-header"><?= $infoHeader ?></h2><!--
                     --><button class="closeBtn">X</button>
                 </div>
-                <div class="box-content" id="info-container">
+                <div class="box-content">
                     <p id="info-body"><?= $infoBody ?></p>
                 </div>
             </section>

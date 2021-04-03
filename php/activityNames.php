@@ -34,7 +34,7 @@ foreach($usersData as $userData){
 
 //check weather to save or retrieve data
 if(isset($_POST['data'])){
-    $activities = /*filter_var(*/$_POST['data']/*, FILTER_SANITIZE_STRING)*/;
+    $activities = $_POST['data'];
     //update or append
     if($hasData){
         update(USERNAME, $username, ACTIVITIES, $activities);

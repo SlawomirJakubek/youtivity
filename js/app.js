@@ -1,4 +1,4 @@
-$(document).ready(()=>{
+//$(document).ready(()=>{
     $('.box').each((index, elem) => {
         if($(elem).attr('id') != 'switchBox'){
             $(elem).hide();
@@ -26,10 +26,15 @@ $(document).ready(()=>{
                     }
                     this._activityNames = data;
                     this.server('./php/setGetActivity.php?', `username=${username}&action=get`, () => {
-                        if(this.request.responseText){
-                            this._currentActivity = JSON.parse(this.request.responseText);
+                        if(this.request.readyState == 4 && this.request.status == 200){
+
+                            if(this.request.responseText){
+                                this._currentActivity = JSON.parse(this.request.responseText);
+                            }
+                            console.log('doing: this.dispatchEvent(new Event(Data.UPDATE));');
+                            this.dispatchEvent(new Event(Data.UPDATE));
                         }
-                        this.dispatchEvent(new Event(Data.UPDATE));
+
                     });
                 }
                 if(this.request.status > 200){
@@ -74,6 +79,7 @@ $(document).ready(()=>{
             request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
             request.onreadystatechange = () => {
                 if(request.readyState == 4 && request.status == 200){
+                    console.log('FROM SAVE ON 4/200: this.dispatchEvent(new Event(Data.UPDATE));');
                     this.dispatchEvent(new Event(this.currentEventType));
                     this.dispatchEvent(new Event(Data.UPDATE));
                 }
@@ -87,16 +93,39 @@ $(document).ready(()=>{
  
     class AbstractBox{
         static $currentBox;
-        static boxes = {};
 
-        constructor(id){
+        constructor(id, openButtonId = null, keyCode = null){
+            this.id = id;
+            this.$returnTo = switchBox;
             this.$element = $(`#${id}`);
             this.$closeBtn = $(`#${id} .closeBtn`);
             
-            this.$closeBtn.on('click', e => {
-                this.$element.hide();
-                AbstractBox.showBox(this.$closeBtn.attr("openBox"));
+            //close box
+            this.$closeBtn.on('click', {fromBox: this, toBox: this.$returnTo, open: false }, this.open);
+
+            $(document).on('keyup', e => {
+                if(e.which == 27){
+                    this.open({data: {fromBox: this, toBox: this.$returnTo, open: false }});
+                }
             });
+
+            //open box
+            if(openButtonId){
+                this.$openBtn = $(`#${openButtonId}`);
+                this.$openBtn.on('click', {toBox: this, open: true }, this.open);
+                this.$openBtn.on('click', ()=>{console.log("YEAH!")});
+            }
+            if(keyCode){
+                $(document).on('keyup', e => {        
+                    if(e.which == keyCode){
+                        this.open({data: {toBox: this, open: true }});
+                    }
+                });
+            }
+        }
+
+        set returnTo($value){
+            this.$returnTo = $value;
         }
 
         show(){
@@ -107,41 +136,28 @@ $(document).ready(()=>{
             this.$element.hide();
         }
 
-        close(){
-            this.hide();
-            AbstractBox.showBox(this.$closeBtn.attr("openBox"));
-        }
-
-        static addBoxByName(name, box){
-            AbstractBox.boxes[name] = box;
-        }
-
-        static showBox(name){
+        open(e){
             AbstractBox.$currentBox.hide();
-            AbstractBox.$currentBox = AbstractBox.boxes[name];
+            AbstractBox.$currentBox = e.data.toBox;
             AbstractBox.$currentBox.show();
         }
     }
 
     class AddBox extends AbstractBox{
-        constructor(data){
-            super('addBox');
+        constructor(data, openButtonId = null, keyCode = null){
+            super('addBox', openButtonId, keyCode);
             this.$addBtn = $('#addBox-addBtn');
             this.$input = $('#addBox-name');
             this.$info = $('#addBox-info');
-            this.$openBtn = $('#bottomBar-addBtn');
             this.newName;
+            this.pattern = new RegExp(/[^\w\s]/);
+
+            this.clear();
 
             const addActivity = () => {
                 SwitchBox.SCROLL = true;
                 data.add(this.newName);
             };
-
-            //open Add Activity Box on click and focus on input
-            this.$openBtn.on('click', ()=>{
-                AbstractBox.showBox(this.$openBtn.attr('openBox'));
-                this.$input.focus();
-            });
 
             //add new activity on button click
             this.$addBtn.on('click', ()=>{addActivity()});
@@ -160,11 +176,21 @@ $(document).ready(()=>{
             this.$input.on('input', e => {
                 const name = this.$input.val().toLowerCase().trim();
                 let isFieldEmpty = name.trim().length == 0;
-                let isDuplicate = data.hasName(name);
-                //on input show or hide info
-                this.$info.css('visibility', isDuplicate ? 'visible' : 'hidden');
+                let isDuplicate = data.hasName(name);               
+                let isforbiddenChar = false;//this.pattern.test(name);
+                //on input change info message
+                if(isDuplicate || isforbiddenChar){
+                    if(isforbiddenChar){
+                        this.$info.html("DON'T USE SPECIAL CHARACTERS<br>only characters from A to z<br>from 0 to 9 and _ are allowed");
+                    }else{
+                        this.$info.html('you already have an activity with that name');
+                    }
+                }else{
+                    this.$info.html('');
+                }
+                
                 //on imput enable or disable "add activity" button
-                if(isFieldEmpty || isDuplicate){
+                if(isFieldEmpty || isDuplicate || isforbiddenChar){
                     this.$addBtn.prop('disabled', true);
                 }else{
                     this.$addBtn.prop('disabled', false);
@@ -172,40 +198,72 @@ $(document).ready(()=>{
                 }
             });
 
-            // open box on key up:
-            $(document).on('keyup', e => {
-                if(e.which == 107){
-                    AbstractBox.showBox('addBox');
-                    this.$input.focus();
-                }
-            });
-
             data.addEventListener(Data.ADD, () => {
                 this.clear();
-                AbstractBox.showBox('switchBox');
+                this.open({data: {toBox: this.$returnTo, open: false}});
             });
         }
 
         clear(){
-            this.$info.css('visibility', 'hidden');
+            this.$info.html('');
             this.$input.val('');
             this.$addBtn.prop('disabled', true);
+        }
+
+        show(){
+            super.show();
+            this.$input.focus();
+        }
+
+        hide(){
+            super.hide();
+            this.clear();
         }
     }
     
     class MenuBox extends AbstractBox{
-        constructor(data){
-            super('menuBox');
+        constructor(data, openButtonId, keyCode){
+            super('menuBox', openButtonId, keyCode);
             this.$menuBtn = $('#bottomBar-menuBtn');
             this.$menuBtn.on('click', ()=>{
-                AbstractBox.showBox(this.$menuBtn.attr('openBox'));
+                this.open(this.$menuBtn.attr('openBox'));
             });
-            // open box on key up:
-            $(document).on('keyup', e => {        
-                if(e.which == 32){
-                    AbstractBox.showBox('menuBox');
+        }
+    }
+
+    class AuthorBox extends AbstractBox{
+        constructor(openButtonId){
+            super('author', openButtonId);
+        }
+
+        open(e){
+            if(e.data.open){
+                if(e.data.toBox.$openBtn.attr('id') == 'openAuthorBtn'){
+                    $('#author .box-header h2').html('AUTHOR'); 
                 }
-            });
+            }
+            super.open(e);
+        }
+    }
+
+    class CopyrightsBox extends AbstractBox{
+        constructor(openButtonId){
+            super('author', openButtonId);
+        }
+
+        open(e){
+            if(e.data.open){
+                if(e.data.toBox.$openBtn.attr('id') == 'openCopyrightsBtn'){
+                    $('#author .box-header h2').html('COPYRIGHTS'); 
+                }
+            }
+            super.open(e);
+        }
+    }
+
+    class InfoBox extends AbstractBox{
+        constructor(){
+            super('infoBox');
         }
     }
 
@@ -216,10 +274,14 @@ $(document).ready(()=>{
             this.$wrapper = $("#switchBox-wrapper");
 
             data.addEventListener(Data.UPDATE, ()=>{
-                this.$wrapper.empty();
+
+                $('#switchBox-wrapper .activityBtn').remove();
+                console.log(data.activityNames.length);
 
                 data.activityNames.forEach(name => {
-                    let $b = $(`<button>${name}</button>`);
+
+                    console.log('appending button:' + name);
+                    let $b = $(`<button class="activityBtn">${name}</button>`);
                     
                     if(data.currentActivity){
                         if(data.currentActivity.name == name){
@@ -230,6 +292,9 @@ $(document).ready(()=>{
 
                     $b.appendTo(this.$wrapper);
                 });
+
+                addBox.$openBtn.appendTo(this.$wrapper);
+
                 if(SwitchBox.SCROLL){
                     this.$element.scrollTop(this.$wrapper.height());
                     SwitchBox.SCROLL = false;
@@ -238,7 +303,7 @@ $(document).ready(()=>{
 
             //on switch activity
             $(this.$wrapper).on('click', e => {
-                if(e.target.tagName == 'BUTTON'){
+                if(e.target.tagName == 'BUTTON' && $(e.target).attr('id') != 'openAddBtn'){
                     //reset all activity buttons
                     $('#switchBox-wrapper button').each((index, elem) => {
                         $(elem).removeClass('buttonPressed');
@@ -256,13 +321,6 @@ $(document).ready(()=>{
                     };
                 }
             });
-
-            // open box on key up:
-            $(document).on('keyup', e => {
-                if(e.which == 27){
-                    AbstractBox.$currentBox.close();
-                }
-            });
         }
 
         show(){
@@ -277,12 +335,12 @@ $(document).ready(()=>{
     }
 
     const data = new Data();
-    const addBox = new AddBox(data);
-    const menuBox = new MenuBox(data);
     const switchBox = new SwitchBox(data);
+    const addBox = new AddBox(data, 'openAddBtn', 107);
+    const menuBox = new MenuBox(data, 'openMenuBtn', 32);
+    const authorBox = new AuthorBox('openAuthorBtn');
+    const copyrightsBox = new CopyrightsBox('openCopyrightsBtn');
+    const infoBox = new InfoBox();
 
     AbstractBox.$currentBox = switchBox;
-    AbstractBox.addBoxByName('addBox', addBox);
-    AbstractBox.addBoxByName('menuBox', menuBox);
-    AbstractBox.addBoxByName('switchBox', switchBox);
-});
+//});

@@ -52,38 +52,73 @@ function logout(){
 
             <section class="box" id="switchBox">
                 <div id="switchBox-wrapper">
+                    <button id="openAddBtn"openBox="addBox">&#10010;</button>
                 </div>
-                <nav id="">
-                    <button id="bottomBar-menuBtn" openBox="menuBox">&#9776;</button>
-                    <button id="bottomBar-addBtn"openBox="addBox">&#10010;</button>
-                </nav>
+                
+                <!--<nav>
+                    <button id="openMenuBtn" openBox="menuBox">&#9776;</button>
+                </nav>-->
             </section>
 
             <section class="box" id="addBox">
-                <h2>ADD ACTIVITY</h2><!--
-                --><button class="closeBtn" openBox="switchBox">X</button>
+                <div class="box-header">
+                    <h2>ADD ACTIVITY</h2><!--
+                    --><button class="closeBtn" openBox="switchBox">X</button>
+                </div>
                 <div class="box-content">
-                    <p id="addBox-info">you already have an activity with that name</p>
-                    <div>
+                    <p id="addBox-info" class="warning"></p>
+                    <div class="formElement">
                         <label for="addBox-name">name</label>
-                        <input type="text" id="addBox-name" placeholder="e.g. sleeping"/>
+                        <input type="text" id="addBox-name" minlength="1" maxlength="30" placeholder="e.g. sleeping"/>
                     </div>
-                    <button id="addBox-addBtn" disabled>add</button>
+                    <div class="formElement">
+                        <button id="addBox-addBtn" disabled>add</button>
+                    </div>
                 </div>
             </section>
 
             <section class="box" id="menuBox">
-                <h2>MENU</h2><!--
-                --><button class="closeBtn"  openBox="switchBox">X</button>
+                <div class="box-header">
+                    <h2>MENU</h2><!--
+                    --><button class="closeBtn"  openBox="switchBox">X</button>
+                </div>
                 <div class="box-content">
+                </div>
+            </section>
+
+            <section class="box" id="author">
+                <div class="box-header">
+                    <h2>AUTHOR</h2><!--
+                    --><button class="closeBtn">X</button>
+                </div>
+                <div class="box-content">
+                    <div>
+                        <p>Hi, my name is Slawomir Jakubek and I am a software developer from Telford, England.</p>
+                        <p>You can contact me by:</p>
+                        <p><a href="mailto:contact@jakubek.co.uk">email</a></p>
+                        <p>or you can visit my website @ <a href="https://jakubek.co.uk" target="_blank">jakubek.co.uk</a></p>
+                    </div>
+                    <div>
+                        <p class="copyrights">&#169; Slawomir Jakubek <?= date("Y"); ?></p>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="box" id="infoBox">
+                <div class="box-header">
+                    <h2 id="info-header"></h2><!--
+                    --><button class="closeBtn">X</button>
+                </div>
+                <div class="box-content">
+                    <p id="infoBox-body"></p>
                 </div>
             </section>
 
         </main>
     </div>
     <footer>
-        <button id="authorBtn">AUTHOR</button>
-        <button id="copyrightsBtn">COPYRIGHTS</button>
+        <button id="openAuthorBtn">AUTHOR</button>
+        <button id="openCopyrightsBtn">COPYRIGHTS</button>
     </footer>
 </body>
 </html>

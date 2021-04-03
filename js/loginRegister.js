@@ -6,7 +6,7 @@ $(document).ready(()=>{
 
     //hide all windows except 'menu'
     $('.box').each((index, elem) => {
-        if($(elem).attr('id') != 'menu'){
+        if($(elem).attr('id') != 'menu' && $(elem).attr('id') != 'info'){
             $(elem).hide();
         }
     });

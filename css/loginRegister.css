@@ -1,32 +1,7 @@
 .box#menu button{
     width: 40%;
+    max-width: 144px;
     margin: 10px 0px;
     height: 60px;
     border-radius: 10px;
-}
-
-/* BOX ABOUT */
-#about .box-content{
-    display: flex;
-    flex-direction: column;
-    align-content: space-between;
-}
-
-#about-app{
-    height: 90%;
-    display: flex;
-    align-items: center;
-}
-
-#about-copyrights{
-    height: 10%;
-}
-
-#about-app p{
-    padding: 0 50px;
-    font-size: 1.1rem;
-}
-
-#about-copyrights p{
-    font-size: .8rem;
 }
