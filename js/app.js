@@ -1,4 +1,4 @@
-//$(document).ready(()=>{
+$(document).ready(()=>{
     $('.box').each((index, elem) => {
         if($(elem).attr('id') != 'switchBox'){
             $(elem).hide();
@@ -410,4 +410,4 @@
     const historyBox = new HistoryBox(data, 'openHistoryBtn');
 
     AbstractBox.$currentBox = switchBox;
-//});
+});

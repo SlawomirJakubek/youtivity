@@ -50,11 +50,12 @@ function logout(){
         </header>
         <main>
 
-            <section class="box" id="switchBox">
+            <section class="box scroll" id="switchBox">
                 <div id="switchBox-wrapper">
                     <button id="openAddBtn">&#10010;</button>
                     <button id="openMenuBtn">&#9776;</button>
                     <button id="openHistoryBtn">&#8461;</button>
+                    <button id="openNightBoxBtn">&#9789;</button>
                 </div>
             </section>
 
@@ -63,7 +64,7 @@ function logout(){
                     <h2>HISTORY</h2><!--
                     --><button class="closeBtn">X</button>
                 </div>
-                <div class="box-content" id="historyBox-wrapper">
+                <div class="box-content scroll" id="historyBox-wrapper">
                     <table>
                         <tr>
                             <th>DATE</th>
