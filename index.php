@@ -18,7 +18,6 @@
     define('KEY', 5);
     define('CLEARANCE', 6);
     session_start();
-
     if(isset($_REQUEST['username']) && isset($_REQUEST['password'])){
         $username = filter_var($_REQUEST['username'], FILTER_SANITIZE_STRING);
         $password = filter_var($_REQUEST['password'], FILTER_SANITIZE_STRING);
@@ -49,7 +48,7 @@
         $goToBoxName = 'login';
         $currentBoxName = 'info';
         $infoHeader = "YOU ARE LOGGED OUT";
-        $infoBody = "We don't know if you logged in on your personal device or not. Therefore to keep your data secure and due to your inactivity you had been logged out. To turn this feature off (for this device) go to settings";
+        $infoBody = "If you don't want to be logged out on close or refresh select \"keep me logged in on this device\" checkbox when you log in.";
     }
 
     function login($username, $password){
@@ -75,8 +74,16 @@
             return;
         }
         //login
+
+        // keep logged in if user selected so
+        if(isset($_REQUEST['remember'])){
+            setcookie("username", $username, time() + (86400 * 30));
+        }else{  
+            setcookie("username", $username, 1);
+        }
+
         $_SESSION["username"] = $username;
-        header('Location: app.php');
+        header("Location: app.php");
     }
 
     function isUserRegistered($username){
@@ -320,6 +327,10 @@
                     <div class="formElement">
                         <label for="login-password">password</label>
                         <input id="login-password" name="password" type="password" minlength="8" maxlength="30" autocomplete="on" value="<?= $password ?>" required />
+                    </div>
+                    <div class="formElement">
+                        <input id="login-remember" name="remember" type="checkbox" value="remember"/>
+                        <label for="login-remember">keep me logged in on this device</label>
                     </div>
                     <div class="formElement">
                         <button>login</button>

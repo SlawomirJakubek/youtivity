@@ -114,6 +114,12 @@ input{
     max-width: 327.59px;
 }
 
+input[type=checkbox]{
+    width: 25px;
+    height: 25px;
+    border-radius: 25%;
+}
+
 /* BOX */
 .box{
     width: 100%;
@@ -181,11 +187,15 @@ input{
     margin: 10px 0;
     width: 91%;
     text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content:center;
 }
 
 .formElement > *{
     display: inline-block;
-
+    margin-left: 10px;
+    margin-right: 10px;
 }
 
 /*about and author*/
@@ -228,6 +238,19 @@ a{
 }
 
 /* MEDIA QUERIES */
+@media only screen and (max-height: 700px){
+    :root{
+        --headerHeight: 0px;
+        --footerHeight: 0px;
+    }
+    header{
+        display: none;
+    }
+    footer{
+        display: none;
+    }
+}
+/*
 @media only screen and (max-height: 510px){
     header{
         display: none;
@@ -251,7 +274,7 @@ a{
         --footerHeight: 0px;
     }
 }
-
+*/
 @media only screen and (min-width: 720px){
     :root{
         --appWidth: 720px;

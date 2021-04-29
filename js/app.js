@@ -292,7 +292,7 @@ $(document).ready(()=>{
             super('historyBox', openButtonId);
             this.$wrapper = $('#historyBox-wrapper');
             data.addEventListener(Data.UPDATE_HISTORY, () => {
-                console.log(data.history);
+                // console.log(data.history);
                 const $table = $('#historyBox-wrapper table');
 
                 for(let i = 1; i < data.history.length; i++){
@@ -300,7 +300,9 @@ $(document).ready(()=>{
                     const date = new Date(parseInt(data.history[i][1]));
 
                     //hour:minute
-                    let tr = '<tr><td>' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds() + '</td>';
+                    let minutes = date.getMinutes();
+                    minutes = /^\d$/.test(minutes) ? '0' + minutes : minutes; 
+                    let tr = '<tr><td class="historyList-date">' + date.getHours() + ':' + minutes + '</td>';
 
                     //activity name
                     tr += '<td>' + data.history[i][0] + '</td>';
@@ -314,13 +316,11 @@ $(document).ready(()=>{
                         nextDate = new Date(parseInt(data.history[i + 1][1]));
                     }
                     const durationInMiliseconds = nextDate - date;
-                    //const h = durationInMiliseconds / 1000 * 60 * 60;
-                    //const m = durationInMiliseconds % (1000 * 60 * 60);
                     const hours = Math.floor((durationInMiliseconds % 86400000) / 3600000);
-                    const minutes = Math.round(((durationInMiliseconds % 86400000) % 3600000) / 60000);
-                    const seconds = Math.round((((durationInMiliseconds % 86400000) % 3600000) % 60000) / 1000);
+                    minutes = Math.round(((durationInMiliseconds % 86400000) % 3600000) / 60000);
+                    minutes = /^\d$/.test(minutes) ? '0' + minutes : minutes; 
 
-                    tr += '<td>' + hours + ':' + minutes + ':' + seconds + '</td>';
+                    tr += '<td class="historyList-duration">' + hours + ':' + minutes + '</td>';
 
                     tr += '</tr>';
 
@@ -328,6 +328,17 @@ $(document).ready(()=>{
                 }
 
             });
+        }
+
+        show(){
+            super.show();
+            console.log(this.$wrapper[0].scrollBy(0, this.$wrapper[0].scrollHeight));
+        }
+    }
+
+    class BedModeBox extends AbstractBox{
+        constructor(data, openButtonId){
+            super('bedModeBox', openButtonId);
         }
     }
 
@@ -343,7 +354,7 @@ $(document).ready(()=>{
 
                 data.activityNames.forEach(name => {
 
-                    let $b = $(`<button class="activityBtn">${name}</button>`);
+                    let $b = $(`<button name="${name}" class="activityBtn">${name}</button>`);
                     
                     if(data.currentActivity){
                         if(data.currentActivity.name == name){
@@ -358,6 +369,7 @@ $(document).ready(()=>{
                 addBox.$openBtn.appendTo(this.$wrapper);
                 menuBox.$openBtn.appendTo(this.$wrapper);
                 historyBox.$openBtn.appendTo(this.$wrapper);
+                bedModeBox.$openBtn.appendTo(this.$wrapper);
 
                 if(SwitchBox.SCROLL){
                     this.$element.scrollTop(this.$wrapper.height());
@@ -382,7 +394,7 @@ $(document).ready(()=>{
                     
                     //save activity event
                     data.currentActivity = {
-                        name: $(e.target).html(),
+                        name: $(e.target).attr('name'),
                         time: new Date().getTime()
                     };
                 }
@@ -408,6 +420,7 @@ $(document).ready(()=>{
     const copyrightsBox = new CopyrightsBox('openCopyrightsBtn');
     const infoBox = new InfoBox();
     const historyBox = new HistoryBox(data, 'openHistoryBtn');
+    const bedModeBox = new BedModeBox(data, 'openBedModeBoxBtn');
 
     AbstractBox.$currentBox = switchBox;
 });

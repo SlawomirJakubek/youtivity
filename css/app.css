@@ -1,3 +1,7 @@
+:root{
+    --historyBox-table-header-height: 34.38px; 
+}
+
 #switchBox{
     border-radius: var(--borderRadius);
     padding: 10px 15px;
@@ -12,8 +16,51 @@
     overflow-y: auto;
 }
 
-#openAddBtn, #openMenuBtn, #openHistoryBtn, #openNightBoxBtn{
+#openAddBtn, #openMenuBtn, #openHistoryBtn, #openNightBoxBtn, #openBedModeBoxBtn{
     padding-left: 30px;
     padding-right: 30px;
     background-color: rgb(126, 221, 255);
+}
+
+input[type=range]{
+    padding: 0;
+}
+
+/* HISTORY */
+.box-content#historyBox-wrapper{
+    height: calc(100% - var(--header2Height) - var(--historyBox-table-header-height));
+}
+
+#historyBox .box-content{
+    justify-content: flex-start;
+}
+
+#historyBox table{
+    width: 95%;
+    margin: 0 auto;
+    max-width: 360px;
+    background-color: rgba(240, 248, 255, 0.322);
+}
+
+#historyBox-table-header{
+    display: flex;
+    justify-content: space-between;
+    font-size: .7rem;
+    height: var(--historyBox-table-header-height);
+}
+
+#historyBox-table-header p:first-child{
+    margin-left: 30px;
+}
+
+#historyBox-table-header p:last-child{
+    margin-right: 10px;
+}
+
+#historyBox table td{
+    padding: 5px;
+}
+
+.historyList-date, .historyList-duration{
+    text-align: right;
 }

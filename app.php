@@ -1,25 +1,31 @@
 <?php
 session_start();
+if(isset($_COOKIE["username"])){
+    $username = $_COOKIE["username"];
+}
 
 if(isset($_SESSION["username"])){
     $username = $_SESSION["username"];
-    /*
-    if(isset($_SESSION['lastRefreshTime'])){
-        $timeSinceLastRefresh = time() - $_SESSION['lastRefreshTime'];
-        if($timeSinceLastRefresh > 10){
-            logout();
-        }
-    }
+    unset($_SESSION["username"]);
+}
 
-    $_SESSION['lastRefreshTime'] = time();
-    */
-
-}else{
+if(!$username){
     logout();
 }
 
+/*
+if(isset($_SESSION['lastRefreshTime'])){
+    $timeSinceLastRefresh = time() - $_SESSION['lastRefreshTime'];
+    if($timeSinceLastRefresh > 10){
+        logout();
+    }
+}
+
+$_SESSION['lastRefreshTime'] = time();
+*/
+
 function logout(){
-    unset($_SESSION["username"]);
+    unset($_COOKIE["username"]);
     $_SESSION['loggedOut'] = 'true';
     header('Location: index.php');
 }
@@ -55,7 +61,23 @@ function logout(){
                     <button id="openAddBtn">&#10010;</button>
                     <button id="openMenuBtn">&#9776;</button>
                     <button id="openHistoryBtn">&#8461;</button>
-                    <button id="openNightBoxBtn">&#9789;</button>
+                    <button id="openBedModeBoxBtn" name="bed">&#9790;</button>
+                </div>
+            </section>
+
+            <section class="box" id="bedModeBox">
+                <div class="box-header">
+                    <h2>BED</h2><!--
+                    --><button class="closeBtn">X</button>
+                </div>
+                <div class="box-content">
+                    <div class="formElement">
+                        <label for="bedModeBox-bedTime">bed time</label>
+                        <input type="range" id="bedModeBox-bedTime" min="0" max="190" value="0"/>
+                    </div>
+                    <div class="formElement">
+                        <button id="bedModeBox-addBtn" disabled>add bed time</button>
+                    </div>
                 </div>
             </section>
 
@@ -64,13 +86,13 @@ function logout(){
                     <h2>HISTORY</h2><!--
                     --><button class="closeBtn">X</button>
                 </div>
+                <div id="historyBox-table-header">
+                    <p>DATE</p>
+                    <p>ACTIVITY</p>
+                    <p>DURATION</p>  
+                </div>
                 <div class="box-content scroll" id="historyBox-wrapper">
                     <table>
-                        <tr>
-                            <th>DATE</th>
-                            <th>ACTIVITY</th>
-                            <th>DURATION</th>
-                        </tr>
                     </table>
                 </div>
             </section>
