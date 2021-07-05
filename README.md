@@ -10,4 +10,7 @@ an app that helps you track your activity
 * jQuery 3.6.0
 * PHP 8.0.3
 
-## Currently in production
+## How to run it
+
+The project is in progress but you can use it now @
+* [youtivity.jakubek.co.uk](http://youtivity.jakubek.co.uk)
